@@ -10,7 +10,17 @@ import Typography from '@mui/material/Typography';
 
 function InscriptionEtape2(props) {
     return (
-        <Box component="form" >
+        <Box 
+        component="form" 
+        sx={{
+            backgroundColor: "#F5F5F5",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            maxWidth: '400px', 
+            margin: 'auto',
+            borderRadius: '7px'}}>
       <Typography variant="h3" gutterBottom>
         Information de l'utilisateur
       </Typography>
@@ -28,6 +38,7 @@ function InscriptionEtape2(props) {
                 <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
+                    name="role"
                     value={props.data.role}
                     label="Role"
                     onChange={props.onInputChange}
@@ -37,19 +48,6 @@ function InscriptionEtape2(props) {
                     <MenuItem value={5}>Utilisateur</MenuItem>
                 </Select>
             </FormControl>
-
-
-
-
-
-            <div>        
-            {/* Champs du formulaire pour nom, prenom, etc. */}
-            {/* Select pour le rôle */}
-            <select name="role" value={props.data.role} onChange={props.onInputChange}>
-                <option value="utilisateur">Utilisateur</option>
-                <option value="taxi">Taxi</option>
-            </select>
-            </div>
             <button type="button" onClick={props.allerAEtapeSuivante}>Suivant</button>
         
         </Box>
