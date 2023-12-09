@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import InscriptionEtape2 from '../Components/InscriptionEtape2';
 import InscriptionTaxiPermis from '../Components/InscriptionTaxiPermis';
 import InscriptionTaxiVehicule from '../Components/InscriptionTaxiVehicule';
+import exampleImage from '../image/taxi.jpg';
 
 
 function InscriptionEtape(props) {
@@ -32,13 +33,67 @@ function InscriptionEtape(props) {
 
     switch (etape) {
         case 1:
-            return <InscriptionEtape2 data={formData} onInputChange={handleInputChange} allerAEtapeSuivante={allerAEtapeSuivante} />;
+            return (        
+            <Box sx={{ flexGrow: 1 }}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={6}>
+                        <InscriptionEtape2 data={formData} onInputChange={handleInputChange} allerAEtapeSuivante={allerAEtapeSuivante} />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <Box
+                            sx={{
+                                backgroundImage: `url(${exampleImage})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                height: '100vh', // ajustez selon vos besoins
+                            }}
+                        />
+                    </Grid>
+                </Grid>
+            </Box>);
         case 2:
             return formData.role === 'taxi' ? 
-                <InscriptionTaxiPermis data={formData} onInputChange={handleInputChange} allerAEtapeSuivante={allerAEtapeSuivante} allerAEtapePrecedente={allerAEtapePrecedente} /> : 
+                (
+                    <Box sx={{ flexGrow: 1 }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6}>
+                                <InscriptionTaxiPermis data={formData} onInputChange={handleInputChange} allerAEtapeSuivante={allerAEtapeSuivante} allerAEtapePrecedente={allerAEtapePrecedente} />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <Box
+                                    sx={{
+                                        backgroundImage: `url(${exampleImage})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        height: '100vh', // ajustez selon vos besoins
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Box>
+                
+                ) : 
                 'Inscription Complète pour Utilisateur';
         case 3:
-            return <InscriptionTaxiVehicule data={formData} onInputChange={handleInputChange} allerAEtapeSuivante={allerAEtapeSuivante} allerAEtapePrecedente={allerAEtapePrecedente} />;
+            return (
+                <Box sx={{ flexGrow: 1 }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <InscriptionTaxiVehicule data={formData} onInputChange={handleInputChange} allerAEtapeSuivante={allerAEtapeSuivante} allerAEtapePrecedente={allerAEtapePrecedente} />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                                <Box
+                                    sx={{
+                                        backgroundImage: `url(${exampleImage})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        height: '100vh', // ajustez selon vos besoins
+                                    }}
+                                />
+                        </Grid>
+                    </Grid>
+                </Box>
+                );
         default:
             return 'Étape inconnue';
     }

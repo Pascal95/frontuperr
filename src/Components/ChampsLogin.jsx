@@ -60,7 +60,6 @@ function ChampsLogin(props) {
             justifyContent: 'center',
             maxWidth: '400px', 
             margin: 'auto',
-            padding: '20px',
             borderRadius: '7px',
             marginTop: '40%'
         }}>
