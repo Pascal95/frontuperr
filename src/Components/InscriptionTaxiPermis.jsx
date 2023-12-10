@@ -9,6 +9,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/fr';
+import SendIcon from '@mui/icons-material/Send';
 
 function InscriptionTaxiPermis(props) {
     const VisuallyHiddenInput = styled('input')({
@@ -27,10 +28,37 @@ function InscriptionTaxiPermis(props) {
             <Typography variant="h3" gutterBottom>
                 Information sur le permis
             </Typography>
-            <Box sx={{paddingBottom:"10px"}}><TextField id="standard-basic" label="Numero de permis" variant="standard" /></Box>
+            <Box sx={{paddingBottom:"10px"}}>
+                <TextField 
+                    id="standard-basic" 
+                    name="numPermis"
+                    label="Numero de permis" 
+                    variant="standard" 
+                    
+                    onChange={props.onInputChange}
+                    value={props.data.numPermis} 
+                    
+                />
+                
+            </Box>
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
-                <Box sx={{paddingBottom:"10px"}}><DatePicker label="Date de délivrance" /></Box>
-                <Box sx={{paddingBottom:"10px"}}><DatePicker label="Date d'expiration" /></Box>
+                <Box sx={{paddingBottom:"10px"}}>
+                    <DatePicker 
+                        label="Date de délivrance"
+                        name="dateDel"
+                        onChange={(newValue) => onInputChange('dateDel', newValue)}
+                        value={props.data.dateDel}  
+                        renderInput={(params) => <TextField {...params} />}
+                    />
+                </Box>
+                <Box sx={{paddingBottom:"10px"}}>
+                    <DatePicker 
+                        label="Date d'expiration" 
+                        name="dateExpi"
+                        onChange={props.onInputChange}
+                        value={props.data.dateExpi}  
+                    />
+                </Box>
             </LocalizationProvider>
             <Box sx={{paddingBottom:"10px"}}>
                 <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
@@ -38,8 +66,9 @@ function InscriptionTaxiPermis(props) {
                     <VisuallyHiddenInput type="file" />
                 </Button>
             </Box>
-            
-            <button type="button" onClick={props.allerAEtapeSuivante}>Suivant</button>
+            <Button variant="contained" onClick={props.allerAEtapeSuivante} endIcon={<SendIcon />}>
+                Suivant
+            </Button>
 
         </Box>
     );

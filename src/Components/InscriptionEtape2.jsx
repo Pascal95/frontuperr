@@ -6,6 +6,8 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import { Box } from '@mui/system';
 import Typography from '@mui/material/Typography';
+import SendIcon from '@mui/icons-material/Send';
+import Button from '@mui/material/Button';
 
 
 function InscriptionEtape2(props) {
@@ -21,19 +23,79 @@ function InscriptionEtape2(props) {
             maxWidth: '400px', 
             margin: 'auto',
             borderRadius: '7px'}}>
-      <Typography variant="h3" gutterBottom>
-        Information de l'utilisateur
-      </Typography>
-            <Box sx={{paddingBottom:"10px"}}><TextField id="standard-basic" label="Nom" variant="standard" /></Box>
-            <Box sx={{paddingBottom:"10px"}}><TextField id="standard-basic" label="Prenom" variant="standard" /></Box>
-            <Box sx={{paddingBottom:"10px"}}><TextField id="standard-basic" label="Adresse" variant="standard" /></Box>
-            <Box sx={{paddingBottom:"10px"}}><TextField id="standard-basic" label="Ville" variant="standard" /></Box>
-            <Box sx={{paddingBottom:"10px"}}><TextField id="standard-basic" label="Code postal" variant="standard" /></Box>
-            <Box sx={{paddingBottom:"10px"}}><TextField id="standard-basic" label="Mail de contact" variant="standard" /></Box>
-            <Box sx={{paddingBottom:"10px"}}><TextField id="standard-basic" label="Telephone" variant="standard" /></Box>
+            <Typography variant="h3" gutterBottom>
+                Information de l'utilisateur
+            </Typography>
+            <Box sx={{paddingBottom:"10px"}}>
+                <TextField 
+                    id="standard-basic" 
+                    name="nom" 
+                    label="Nom"     
+                    onChange={props.onInputChange}
+                    value={props.data.nom} 
+                    variant="standard" />
+            </Box>
+            <Box sx={{paddingBottom:"10px"}}>
+                <TextField 
+                    id="standard-basic" 
+                    name="prenom" 
+                    label="Prenom"  
+                    variant="standard" 
+                    onChange={props.onInputChange}
+                    value={props.data.prenom} 
+                />
+            </Box>
+            <Box sx={{paddingBottom:"10px"}}>
+                <TextField 
+                    id="standard-basic" 
+                    name="adresse" 
+                    label="Adresse"  
+                    variant="standard" 
+                    onChange={props.onInputChange}
+                    value={props.data.adresse} 
+                />
+            </Box>
+            <Box sx={{paddingBottom:"10px"}}>
+                <TextField 
+                    id="standard-basic" 
+                    name="ville" 
+                    label="Ville"  
+                    variant="standard" 
+                    onChange={props.onInputChange}
+                    value={props.data.ville} 
+                />
+            </Box>
+            <Box sx={{paddingBottom:"10px"}}>
+                <TextField 
+                    id="standard-basic" 
+                    name="codepostal" 
+                    label="Code postal"  
+                    variant="standard"
+                    onChange={props.onInputChange}
+                    value={props.data.codepostal}  
+                />
+            </Box>
+            <Box sx={{paddingBottom:"10px"}}>
+                <TextField 
+                    id="standard-basic" 
+                    name="mailcontact" 
+                    label="Mail de contact"  
+                    variant="standard" 
+                    onChange={props.onInputChange}
+                    value={props.data.mailcontact}  
+                />
+                </Box>
+            <Box sx={{paddingBottom:"10px"}}>
+                <TextField 
+                    id="standard-basic" 
+                    name="telephone" 
+                    label="Telephone"  
+                    variant="standard" 
+                    onChange={props.onInputChange}
+                    value={props.data.telephone} 
+                />
+            </Box>
             <FormControl variant="standard" sx={{m: 1, width: '22ch'}}>
-
-            
                 <InputLabel id="demo-simple-select-label">Role</InputLabel>
                 <Select
                     labelId="demo-simple-select-label"
@@ -48,8 +110,9 @@ function InscriptionEtape2(props) {
                     <MenuItem value={5}>Utilisateur</MenuItem>
                 </Select>
             </FormControl>
-            <button type="button" onClick={props.allerAEtapeSuivante}>Suivant</button>
-        
+            <Button variant="contained" onClick={props.allerAEtapeSuivante} endIcon={<SendIcon />}>
+                Suivant
+            </Button>
         </Box>
     );
 }
