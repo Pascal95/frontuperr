@@ -13,7 +13,7 @@ function InscriptionEtape(props) {
     const heureDemande = info.substring(0,14)
     const idUSR = info.substring(14)
     const [etape, setEtape] = useState(1);
-    const [idFiche, setidFiche] = useState(0);
+    const [idFiiche, setidFiiche] = useState(0);
     const [formFiche, setformFiche] =useState({
         nom: '',
         prenom: '',
@@ -34,16 +34,17 @@ function InscriptionEtape(props) {
         dateDel:'',
         dateExpi:'',
         ficPermis:'',
-        idFiche:idFiche
+        idFiche:idFiiche
     })
-
+    
     const [formVehicule, setformVehicule] = useState({
-        marqu:'',
-        modele:'',
-        annee:'',
+        Marque:'',
+        Modele:'',
+        Annee:'',
         numImmatriculation:'',
         numSerie:'',
-        idFiche:idFiche
+        ficVehicule:'',
+        idFiche:idFiiche
     })
 
     const allerAEtapeSuivante = async () => {
@@ -78,8 +79,21 @@ function InscriptionEtape(props) {
             if (!response.ok) {
                 throw new Error(data.erreur || 'Erreur lors de la soumission du formulaire');
             }
-            setidFiche(data.ficheId)
             console.log("FormFiche soumis avec succès", data);
+
+            if(data.ficheId) {
+                setformPermis(prevState => ({
+                    ...prevState,
+                    idFiche: data.ficheId
+                }));
+
+                setformVehicule(prevState => ({
+                    ...prevState,
+                    idFiche: data.ficheId
+                }));
+            }
+
+            
             // Logique pour passer à l'étape suivante ou terminer le processus d'inscription
         } catch (err) {
             console.error("Erreur lors de la soumission de formFiche", err);
@@ -138,21 +152,17 @@ function InscriptionEtape(props) {
             ...formFiche,
             [e.target.name]: e.target.value
         })
-        console.log(formFiche)
     }
-    const handleInputPermis = (name, value) => {
-        setformPermis(prevFormPermis => ({
-            ...prevFormPermis,
-            [name]: value
-        }));
-    };
+    
 
-/*    const handleInputPermis = (e) => {
+    const handleInputPermis = (e) => {
         setformPermis({
             ...formPermis,
             [e.target.name]: e.target.value
         })
-    }*/
+        console.log(formPermis)
+    }
+
     const handleInputVehicule = (e) => {
         setformVehicule({
             ...formVehicule,

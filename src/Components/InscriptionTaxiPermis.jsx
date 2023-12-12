@@ -36,30 +36,19 @@ function InscriptionTaxiPermis(props) {
                     variant="standard" 
                     
                     onChange={props.onInputChange}
-                    value={props.data.numPermis} 
-                    
+                    value={props.data.numPermis}
                 />
                 
             </Box>
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
-                <Box sx={{paddingBottom:"10px"}}>
-                    <DatePicker 
-                        label="Date de délivrance"
-                        name="dateDel"
-                        onChange={(newValue) => onInputChange('dateDel', newValue)}
-                        value={props.data.dateDel}  
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                </Box>
-                <Box sx={{paddingBottom:"10px"}}>
-                    <DatePicker 
-                        label="Date d'expiration" 
-                        name="dateExpi"
-                        onChange={props.onInputChange}
-                        value={props.data.dateExpi}  
-                    />
-                </Box>
-            </LocalizationProvider>
+            <Box sx={{paddingBottom:"10px"}}>
+            <label>Date de délivrance</label>
+            <input type="date" name="dateDel" value={props.data.dateDel} onChange={props.onInputChange} />
+
+            </Box>
+            <Box sx={{paddingBottom:"10px"}}>
+                <label>Date d'expiration</label>
+                <input type="date" name="dateExpi" value={props.data.dateExpi} onChange={props.onInputChange} />
+            </Box>
             <Box sx={{paddingBottom:"10px"}}>
                 <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
                     Scan permis

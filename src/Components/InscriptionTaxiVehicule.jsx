@@ -16,7 +16,8 @@ function InscriptionTaxiVehicule(props) {
                     id="standard-basic" 
                     label="Marque du véhicule" 
                     variant="standard" 
-                    onChange={props.handleInputVehicule}
+                    name="Marque"
+                    onChange={props.onInputChange}
                     value={props.data.Marque} 
                 />
             </Box>
@@ -25,7 +26,8 @@ function InscriptionTaxiVehicule(props) {
                     id="standard-basic" 
                     label="Modele du véhicule" 
                     variant="standard" 
-                    onChange={props.handleInputVehicule}
+                    name="Modele"
+                    onChange={props.onInputChange}
                     value={props.data.Modele} 
                 />
             </Box>
@@ -34,7 +36,8 @@ function InscriptionTaxiVehicule(props) {
                     id="standard-basic" 
                     label="Année" 
                     variant="standard" 
-                    onChange={props.handleInputVehicule}
+                    name="Annee"
+                    onChange={props.onInputChange}
                     value={props.data.Annee} 
                 />
             </Box>
@@ -43,7 +46,8 @@ function InscriptionTaxiVehicule(props) {
                     id="standard-basic" 
                     label="Numero d'immatriculation'" 
                     variant="standard" 
-                    onChange={props.handleInputVehicule}
+                    name="numImmatriculation"
+                    onChange={props.onInputChange}
                     value={props.data.numImmatriculation} 
                 />
             </Box>
@@ -52,7 +56,8 @@ function InscriptionTaxiVehicule(props) {
                     id="standard-basic" 
                     label="Numero de série" 
                     variant="standard" 
-                    onChange={props.handleInputVehicule}
+                    name="numSerie"
+                    onChange={props.onInputChange}
                     value={props.data.numSerie} 
                 />
             </Box>
