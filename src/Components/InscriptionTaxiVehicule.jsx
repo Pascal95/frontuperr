@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { Box } from '@mui/system';
 import Typography from '@mui/material/Typography';
@@ -6,6 +6,26 @@ import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 
 function InscriptionTaxiVehicule(props) {
+    
+    const [erreurs, setErreurs] = useState([]);
+
+    const validerFormulaire = () => {
+        let erreursTemp = [];
+
+        // Validation des champs
+        if (!props.data.Marque.trim()) erreursTemp.push('La marque du véhicule ne peut pas être vide.');
+        if (!props.data.Modele.trim()) erreursTemp.push('Le modèle du véhicule ne peut pas être vide.');
+        if (!/^\d{4}$/.test(props.data.Annee)) erreursTemp.push('L\'année doit contenir 4 chiffres.');
+        if (!props.data.numImmatriculation.trim()) erreursTemp.push('Le numéro d\'immatriculation ne peut pas être vide.');
+        if (!/^.{17}$/.test(props.data.numSerie)) erreursTemp.push('Le numéro de série doit contenir exactement 17 caractères.');
+
+        setErreurs(erreursTemp);
+
+        // Si tout est valide, aller à l'étape suivante
+        if (erreursTemp.length === 0) {
+            props.allerAEtapeSuivante();
+        }
+    };
     return (
         <Box component="form" >
             <Typography variant="h3" gutterBottom>
@@ -61,7 +81,14 @@ function InscriptionTaxiVehicule(props) {
                     value={props.data.numSerie} 
                 />
             </Box>
-            <Button variant="contained" onClick={props.allerAEtapeSuivante} endIcon={<SendIcon />}>
+            {erreurs.length > 0 && (
+                <Box sx={{ color: 'error.main' }}>
+                    {erreurs.map((erreur, index) => (
+                        <Typography key={index} color="error">{erreur}</Typography>
+                    ))}
+                </Box>
+            )}
+            <Button variant="contained" onClick={validerFormulaire} endIcon={<SendIcon />}>
                 Valider
             </Button>
         </Box>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -10,7 +10,31 @@ import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
 
 
+
 function InscriptionEtape2(props) {
+    const [erreurs, setErreurs] = useState([]);
+
+    const validerFormulaire = () => {
+        let erreursTemp = [];
+
+        // Validation des champs
+        if (!props.data.nom.trim()) erreursTemp.push('Le nom ne peut pas être vide.');
+        if (!props.data.prenom.trim()) erreursTemp.push('Le prénom ne peut pas être vide.');
+        if (!props.data.ville.trim()) erreursTemp.push('La ville ne peut pas être vide.');
+        if (!props.data.adresse.trim()) erreursTemp.push('L\'adresse ne peut pas être vide.');
+        if (!/^\d{5}$/.test(props.data.codepostal)) erreursTemp.push('Le code postal doit contenir 5 chiffres.');
+        if (!/^\S+@\S+\.\S+$/.test(props.data.mailcontact)) erreursTemp.push('L\'adresse mail n\'est pas valide.');
+        if (!/^\d{10}$/.test(props.data.telephone)) erreursTemp.push('Le téléphone doit contenir 10 chiffres.');
+        if (!props.data.role) erreursTemp.push('Le rôle ne peut pas être vide.');
+
+        setErreurs(erreursTemp);
+
+        // Si tout est valide, aller à l'étape suivante
+        if (erreursTemp.length === 0) {
+            props.allerAEtapeSuivante();
+        }
+    };
+
     return (
         <Box 
         component="form" 
@@ -110,7 +134,14 @@ function InscriptionEtape2(props) {
                     <MenuItem value={5}>Utilisateur</MenuItem>
                 </Select>
             </FormControl>
-            <Button variant="contained" onClick={props.allerAEtapeSuivante} endIcon={<SendIcon />}>
+            {erreurs.length > 0 && (
+                <Box sx={{ color: 'error.main' }}>
+                    {erreurs.map((erreur, index) => (
+                        <Typography key={index} color="error">{erreur}</Typography>
+                    ))}
+                </Box>
+            )}
+            <Button variant="contained" onClick={validerFormulaire} endIcon={<SendIcon />}>
                 Suivant
             </Button>
         </Box>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { Box } from '@mui/system';
 import Typography from '@mui/material/Typography';
@@ -12,6 +12,8 @@ import 'dayjs/locale/fr';
 import SendIcon from '@mui/icons-material/Send';
 
 function InscriptionTaxiPermis(props) {
+    const [erreurs, setErreurs] = useState([]);
+
     const VisuallyHiddenInput = styled('input')({
         clip: 'rect(0 0 0 0)',
         clipPath: 'inset(50%)',
@@ -22,7 +24,37 @@ function InscriptionTaxiPermis(props) {
         left: 0,
         whiteSpace: 'nowrap',
         width: 1,
-      });
+    });
+
+
+    const validerFormulaire = () => {
+    let erreursTemp = [];
+    const dateActuelle = new Date();
+
+    // Vérifier que numPermis est un entier
+    if (!/^\d+$/.test(props.data.numPermis)) {
+        erreursTemp.push('Le numéro de permis doit contenir uniquement des chiffres.');
+    }
+
+    // Vérifier que les dates ne sont pas vides et que la date d'expiration est valide
+    if (!props.data.dateDel) {
+        erreursTemp.push('La date de délivrance ne peut pas être vide.');
+    }
+    if (!props.data.dateExpi) {
+        erreursTemp.push('La date d\'expiration ne peut pas être vide.');
+    } else if (new Date(props.data.dateExpi) <= dateActuelle) {
+        erreursTemp.push('La date d\'expiration doit être supérieure à la date actuelle.');
+    }
+
+    setErreurs(erreursTemp);
+
+    // Si tout est valide, aller à l'étape suivante
+    if (erreursTemp.length === 0) {
+        props.allerAEtapeSuivante();
+    }
+    };
+
+
     return (
         <Box component="form" >
             <Typography variant="h3" gutterBottom>
@@ -55,7 +87,16 @@ function InscriptionTaxiPermis(props) {
                     <VisuallyHiddenInput type="file" />
                 </Button>
             </Box>
-            <Button variant="contained" onClick={props.allerAEtapeSuivante} endIcon={<SendIcon />}>
+
+            {erreurs.length > 0 && (
+                <Box sx={{ color: 'error.main' }}>
+                    {erreurs.map((erreur, index) => (
+                        <Typography key={index} color="error">{erreur}</Typography>
+                    ))}
+                </Box>
+            )}
+
+            <Button variant="contained" onClick={validerFormulaire} endIcon={<SendIcon />}>
                 Suivant
             </Button>
 

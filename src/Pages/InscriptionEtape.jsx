@@ -221,7 +221,7 @@ function InscriptionEtape(props) {
                     </Box>
                 
                 ) : 
-                'Inscription Complète pour Utilisateur';
+                'Inscription terminé';
         case 3:
             return (
                 <Box sx={{ flexGrow: 1 }}>
@@ -248,7 +248,7 @@ function InscriptionEtape(props) {
                 </Box>
                 );
         default:
-            return 'Étape inconnue';
+            return 'Inscription terminé vous serez recontacté lors de la confirmation de votre inscription';
     }
 }
 
