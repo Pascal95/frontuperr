@@ -7,14 +7,18 @@ import Inscription from "../Pages/Inscription";
 import InscriptionEtape from '../Pages/InscriptionEtape';
 import DashboardInit from "../Components/DashboardInit/DashboardInit";
 import Patient from "../Components/Patient/Patient";
+import ProtectedRoute from './ProtectedRoute';
 
 const Router = () => {
   return (
     <Routes>
         <Route path="/" element={<Login />} />
+        
         <Route 
           path="/Dashboard" 
-          element={<Dashboard />}
+          element={
+            <Dashboard />
+        }
         >
           <Route path="accueil" element={<DashboardInit />} />
           <Route path="settings" element={<Settings />} />
