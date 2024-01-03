@@ -2,6 +2,7 @@ import React from 'react';
 import ChampsLogin from '../Components/ChampsLogin';
 import { Box, Grid } from '@mui/material';
 import exampleImage from '../image/taxi.jpg';
+import VoitureMickael from '../assets/img/mercedes.jpeg';
 
 function Login(props) {
     return (
@@ -13,7 +14,7 @@ function Login(props) {
                 <Grid item xs={12} md={6}>
                     <Box
                         sx={{
-                            backgroundImage: `url(${exampleImage})`,
+                            backgroundImage: `url(${VoitureMickael})`,
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                             height: '100vh', // ajustez selon vos besoins

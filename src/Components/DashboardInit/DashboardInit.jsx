@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import './DashboardInit.css'
 import { Box } from '@mui/system';
-import { Button, Skeleton } from '@mui/material';
+import { Button, Skeleton, CircularProgress, Backdrop, Snackbar, Alert } from '@mui/material';
 import { useJsApiLoader, GoogleMap, Marker, Autocomplete, DirectionsRenderer } from '@react-google-maps/api';
 import moment from 'moment';
 
@@ -14,6 +14,7 @@ function DashboardInit(props) {
     const [duration, setDuration] = useState('')
     const [isTypingOrigin, setIsTypingOrigin] = useState(false);
     const [isTypingDestination, setIsTypingDestination] = useState(false);
+    const token = localStorage.getItem('token');
     const [formData, setFormData] = useState({
         patient: '',
         numSecu: '',
@@ -21,11 +22,13 @@ function DashboardInit(props) {
         arrivee: '',
         dateTime: '',
         heureDepart: '',
-        dureeConsult: '',
+        DureeConsult: '',
         DureeTrajet: '',    
         allerRetour: '',
         Distance: '',
     });
+    const [isLoading, setIsLoading] = useState(false);
+    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
 
     /** @type React.MutableRefObject<HTMLInputElement> */
     const originRef = useRef()
@@ -72,6 +75,10 @@ function DashboardInit(props) {
         })  
     }
 
+    const handleCloseSnackbar = () => {
+        setSnackbar({ ...snackbar, open: false });
+    };
+
     function clearRoute() {
         setDirectionsResponse(null)
         setDistance('')
@@ -79,22 +86,90 @@ function DashboardInit(props) {
         originRef.current.value = ''
         destinationRef.current.value = ''
     }
-
+    const handleSelectOrigin = () => {
+        const place = originAutocomplete.getPlace();
+        if (place.formatted_address) {
+            setFormData(prevState => ({
+                ...prevState,
+                depart: place.formatted_address
+            }));
+        }
+    };
+    
+    const handleSelectDestination = () => {
+        const place = destinationAutocomplete.getPlace();
+        if (place.formatted_address) {
+            setFormData(prevState => ({
+                ...prevState,
+                arrivee: place.formatted_address
+            }));
+        }
+    };
+    
     const handleOriginChange = (e) => {
         setIsTypingOrigin(true);
-        setDirectionsResponse(null); // Réinitialise l'itinéraire lors de la modification de l'adresse
-        handleInputChange(e); // Mise à jour de l'état formData pour le champ de départ
+        setDirectionsResponse(null); // Réinitialise l'itinéraire
+        setFormData(prevState => ({
+            ...prevState,
+            depart: e.target.value // Mise à jour de formData.depart
+        }));
     };
 
     const handleDestinationChange = (e) => {
         setIsTypingDestination(true);
-        setDirectionsResponse(null); // Réinitialise l'itinéraire lors de la modification de l'adresse
-        handleInputChange(e); // Mise à jour de l'état formData pour le champ d'arrivée
+        setDirectionsResponse(null); // Réinitialise l'itinéraire
+        setFormData(prevState => ({
+            ...prevState,
+            arrivee: e.target.value // Mise à jour de formData.arrivee
+        }));
     };
 
     const handleBlur = () => {
         setIsTypingOrigin(false);
         setIsTypingDestination(false);
+    };
+
+    const sendReservationData = async () => {
+        setIsLoading(true);
+        const url = "https://backupper.onrender.com/api/reservation/newreservation";
+        const formattedHeureDepart = moment(formData.heureDepart).format('YYYY-MM-DD HH:mm:ss');
+        const formattedHeureConsult = moment(formData.HeureConsult).format('YYYY-MM-DD HH:mm:ss');
+        const distanceValue = parseFloat(distance);
+        const durationParts = duration.match(/(\d+)\s*min/);
+        const durationValue = durationParts ? `00:${durationParts[1].padStart(2, '0')}:00` : '00:00:00';
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                AdresseDepart: formData.depart,
+                AdresseArrive: formData.arrivee,
+                Distance: distanceValue, // Assurez-vous que cette valeur est correcte
+                DureeTrajet: durationValue,
+                HeureConsult: formattedHeureConsult,
+                HeureDepart: formattedHeureDepart,
+                AllerRetour: formData.AllerRetour,
+                DureeConsult: formData.DureeConsult
+            })
+        };
+
+        try {
+            const response = await fetch(url, requestOptions);
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+            const responseData = await response.json();
+            console.log(responseData); // Traiter les données reçues
+            setSnackbar({ open: true, message: 'Réservation réussie!', severity: 'success' });
+        } catch (error) {
+            console.error('There was an error!', error);
+            setSnackbar({ open: true, message: 'Échec de la réservation.', severity: 'error' });
+        } finally{
+            setIsLoading(false);
+        
+        }
     };
 
     useEffect(() => {
@@ -123,15 +198,26 @@ function DashboardInit(props) {
     };
 
     const handleConsultationDateTimeChange = (e) => {
-        const consultationDateTime = moment(e.target.value);
-        if (!duration || !consultationDateTime.isValid()) return;
-
+        console.log("Nouvelle valeur:", e.target.value);
+        const consultationDateTimeValue = e.target.value;
+        const consultationDateTime = moment(consultationDateTimeValue);
+    
+        if (!consultationDateTime.isValid()) {
+            console.error('Date et heure de consultation non valides:', consultationDateTimeValue);
+            return;
+        }
+    
+        if (!duration) {
+            console.error('Durée non définie');
+            return;
+        }
+    
         const trajetMinutes = convertDurationToMinutes(duration);
         const totalDurationInMinutes = trajetMinutes + 15; // Ajouter 15 minutes
-
+    
         // Calculer la nouvelle heure de départ
         const departureTime = consultationDateTime.clone().subtract(totalDurationInMinutes, 'minutes');
-
+    
         setFormData(prevState => ({
             ...prevState,
             heureDepart: departureTime.format("YYYY-MM-DDTHH:mm")
@@ -141,7 +227,8 @@ function DashboardInit(props) {
     // Configuration de la carte
     const mapContainerStyle = {
         width: '100%',
-        height: '400px'
+        height: '400px',
+        marginTop: '20px',
     };
     const center = {
         lat: 48.8566, // Coordonnées de Paris, par exemple
@@ -160,9 +247,25 @@ function DashboardInit(props) {
             ...prevState,
             [name]: value
         }));
-        console.log(directionsResponse)
     };
 
+    useEffect(() => {
+        if (isLoaded) {
+            // Autocomplete pour le lieu de départ
+            const originAutocomplete = new google.maps.places.Autocomplete(originRef.current);
+            originAutocomplete.setComponentRestrictions({ country: "fr" });
+            originAutocomplete.addListener("place_changed", handleSelectOrigin);
+    
+            // Autocomplete pour le lieu d'arrivée
+            const destinationAutocomplete = new google.maps.places.Autocomplete(destinationRef.current);
+            destinationAutocomplete.setComponentRestrictions({ country: "fr" });
+            destinationAutocomplete.addListener("place_changed", handleSelectDestination);
+        }
+    }, [isLoaded]);
+    
+    
+        
+    
     if (!isLoaded) return <Skeleton variant="rectangular" width="100%" height="400px" />;
 
 
@@ -171,21 +274,6 @@ function DashboardInit(props) {
             <h2 className="dashboard__title">Reserver un taxi</h2>
 
             <form onSubmit={handleSubmit}>
-                <div className="form__group">
-                    <div>
-                        <label>Patient</label>
-                        <input 
-                            type="text" 
-                            name="patient"
-                            placeholder="Nom du patient"
-                            onChange={handleInputChange}
-                        />
-                    </div>
-                    <div>
-                        <label>Numéro de sécurité social</label>
-                        <input type="text" placeholder="10093072074" />
-                    </div>
-                </div>
                 <div className="form__group">
                     <div>
                         <label>Lieu de départ</label>
@@ -238,39 +326,29 @@ function DashboardInit(props) {
                 <div className="form__group">
                     <div>
                         <label htmlFor="">Durée de la consultation</label>
-                        <input type="time" name="dureeconsult" id="dureeconsult" />
+                        <input type="time" name="DureeConsult" id="DureeConsult" onChange={handleInputChange} />
                     </div>
                     <div>
-                        <label htmlFor="">Durée de la consultation</label>
-                        <input type="time" name="DureeTrajet" id="DureeTrajet" />
-                    </div>
-                    
-                </div>
-                <div className="form__group">
-                <div>
                         <label htmlFor="">Souhaitez vous faire l'aller retour</label>
-                        <select name="AllerRetour" id="AllerRetour" onChange={handleInputChange} >
+                        <select name="AllerRetour" id="AllerRetour" onChange={handleInputChange}  >
                             <option value="1">Oui</option>
                             <option value="0">Non</option>
                         </select>
                     </div>
                 </div>
-                <button className="btn-validate">Valider</button>
+                <button onClick={sendReservationData} className="btn-validate">Envoyer la réservation</button>
+                <Backdrop 
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={isLoading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+                <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
             </form>
-            <Button 
-                variant="contained" 
-                sx={{ mt: 2 }} 
-                onClick={() => map.panTo(center)}>Recentrer</Button>
-            <Button
-                variant="contained"
-                sx={{ mt: 2 }}
-                onClick={calculateRoute}>Calculer</Button>
-            <Button
-                variant="contained"
-                sx={{ mt: 2 }}
-                onClick={clearRoute}>Effacer</Button>
-            <p>Distance: {distance}</p>
-            <p>Durée: {duration}</p>
 
             <Box sx={mapContainerStyle}>
                 <GoogleMap

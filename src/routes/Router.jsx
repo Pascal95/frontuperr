@@ -8,6 +8,7 @@ import InscriptionEtape from '../Pages/InscriptionEtape';
 import DashboardInit from "../Components/DashboardInit/DashboardInit";
 import Patient from "../Components/Patient/Patient";
 import ProtectedRoute from './ProtectedRoute';
+import Courses from "../Components/Courses/Courses";
 
 const Router = () => {
   return (
@@ -21,6 +22,7 @@ const Router = () => {
         }
         >
           <Route path="accueil" element={<DashboardInit />} />
+          <Route path="courses" element={<Courses />} />
           <Route path="settings" element={<Settings />} />
           <Route path="patient" element={<Patient />} />
         </Route>

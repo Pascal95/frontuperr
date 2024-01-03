@@ -5,6 +5,11 @@ const navLinks = [
     display: "Réserver un taxi",
   },
   {
+    path: "/Dashboard/courses",
+    icon: "ri-user-2-line",
+    display: "Mes courses",
+  },
+  {
     path: "/Dashboard/patient",
     icon: "ri-taxi-line",
     display: "Mes patients",

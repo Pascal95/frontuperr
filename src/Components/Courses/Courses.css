@@ -1,0 +1,32 @@
+.CoursesInit{
+    margin-top: 100px;
+    margin-left: 100px;
+    padding-bottom: 50px;
+}
+
+.courses__title {
+    color: var(--heading-color);
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
+
+.Tableau{
+}
+
+.TableauTitle{
+    color:var(--heading-color);
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.TableauBody{
+    color:var(--small-text-color);
+    margin-top: 50px;
+    margin-bottom: 50px;
+    
+}
+
+td{
+    padding: 10px;
+    border-bottom: dashed 1px var(--small-text-color);
+}
