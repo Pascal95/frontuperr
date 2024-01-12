@@ -84,7 +84,7 @@ function InscriptionTaxiPermis(props) {
             <Box sx={{paddingBottom:"10px"}}>
                 <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
                     Scan permis
-                    <VisuallyHiddenInput type="file" />
+                    <VisuallyHiddenInput name="permis" type="file" onChange={props.onFileChangePermis}/>
                 </Button>
             </Box>
 

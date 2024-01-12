@@ -7,7 +7,7 @@ import { useJsApiLoader, GoogleMap, Marker, Autocomplete, DirectionsRenderer } f
 import moment from 'moment';
 
 function DashboardInit(props) {
-    const ApiKey = "AIzaSyD5_kKrwRWSXq1lh9UI_-5tONjU1BeQSII"
+    const ApiKey = import.meta.env.REACT_APP_GOOGLE_MAPS_API_KEY;
     const [map,setMap] = useState(/** @type google.maps.Map */ (null))
     const [directionsResponse, setDirectionsResponse] = useState(null)
     const [distance, setDistance] = useState('')
@@ -15,6 +15,7 @@ function DashboardInit(props) {
     const [isTypingOrigin, setIsTypingOrigin] = useState(false);
     const [isTypingDestination, setIsTypingDestination] = useState(false);
     const token = localStorage.getItem('token');
+    const apiUrl = import.meta.env.REACT_APP_API_URL;
     const [formData, setFormData] = useState({
         patient: '',
         numSecu: '',
@@ -131,7 +132,7 @@ function DashboardInit(props) {
 
     const sendReservationData = async () => {
         setIsLoading(true);
-        const url = "https://backupper.onrender.com/api/reservation/newreservation";
+        const url = `${apiUrl}/api/reservation/newreservation`;
         const formattedHeureDepart = moment(formData.heureDepart).format('YYYY-MM-DD HH:mm:ss');
         const formattedHeureConsult = moment(formData.HeureConsult).format('YYYY-MM-DD HH:mm:ss');
         const distanceValue = parseFloat(distance);

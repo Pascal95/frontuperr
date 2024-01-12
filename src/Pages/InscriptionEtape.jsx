@@ -15,6 +15,7 @@ function InscriptionEtape(props) {
     const idUSR = info.substring(14)
     const [etape, setEtape] = useState(1);
     const [idFiiche, setidFiiche] = useState(0);
+    const apiUrl = import.meta.env.VITE_API_URL;
     const [formFiche, setformFiche] =useState({
         nom: '',
         prenom: '',
@@ -34,7 +35,7 @@ function InscriptionEtape(props) {
         numPermis:'',
         dateDel:'',
         dateExpi:'',
-        ficPermis:'',
+        permis:'',
         idFiche:idFiiche
     })
     
@@ -44,7 +45,7 @@ function InscriptionEtape(props) {
         Annee:'',
         numImmatriculation:'',
         numSerie:'',
-        ficVehicule:'',
+        carteGrise:'',
         idFiche:idFiiche
     })
 
@@ -68,7 +69,7 @@ function InscriptionEtape(props) {
 
     const soumettreFormFiche = async () => {
         try {
-            const response = await fetch("https://backupper.onrender.com/api/users/ficheuser", {
+            const response = await fetch(`${apiUrl}/api/users/ficheuser`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -103,13 +104,24 @@ function InscriptionEtape(props) {
     };
     
     const soumettreFormPermis = async () => {
+        const formData = new FormData();
+    
+        // Ajoutez les champs de formulaire et le fichier à l'objet FormData
+        formData.append('numPermis', formPermis.numPermis);
+        formData.append('dateDel', formPermis.dateDel);
+        formData.append('dateExpi', formPermis.dateExpi);
+        formData.append('idFiche', formPermis.idFiche);
+    
+        // Ajoutez le fichier permis si disponible
+        if (formPermis.permis) {
+            formData.append('permis', formPermis.permis);
+        }
+    
         try {
-            const response = await fetch("https://backupper.onrender.com/api/users/fichepermis", {
+            const response = await fetch(`${apiUrl}/api/users/fichepermis`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formPermis)
+                body: formData, // Ici, envoyez formData au lieu d'un JSON
+                // Ne définissez pas l'en-tête 'Content-Type' ; il sera automatiquement défini par le navigateur
             });
     
             const data = await response.json();
@@ -124,15 +136,28 @@ function InscriptionEtape(props) {
             // Gérer l'erreur ici
         }
     };
+    
 
     const soumettreFormVehicule = async () => {
         try {
-            const response = await fetch("https://backupper.onrender.com/api/users/fichevehicule", {
+            const formData = new FormData();
+
+            formData.append('Marque', formVehicule.Marque);
+            formData.append('Modele', formVehicule.Modele);
+            formData.append('Annee', formVehicule.Annee);
+            formData.append('numImmatriculation', formVehicule.numImmatriculation);
+            formData.append('numSerie', formVehicule.numSerie);
+            formData.append('carteGrise', formVehicule.carteGrise);
+            formData.append('idFiche', formVehicule.idFiche);
+
+        
+            // Ajoutez le fichier permis si disponible
+            if (formVehicule.carteGrise) {
+                formData.append('carteGrise', formVehicule.carteGrise);
+            }
+            const response = await fetch(`${apiUrl}/api/users/fichevehicule`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formVehicule)
+                body: formData,
             });
     
             const data = await response.json();
@@ -171,6 +196,25 @@ function InscriptionEtape(props) {
         })
     }
 
+    const handleFileChangePermis = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setformPermis({
+                ...formPermis,
+                permis: e.target.files[0]
+            });
+        }
+    };
+
+    const handleFileChangeVehicule = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setformPermis({
+                ...formVehicule,
+                carteGrise: e.target.files[0]
+            });
+        }
+    };
+    
+
     switch (etape) {
         case 1:
             return (        
@@ -204,6 +248,7 @@ function InscriptionEtape(props) {
                                 <InscriptionTaxiPermis 
                                     data={formPermis} 
                                     onInputChange={handleInputPermis} 
+                                    onFileChangePermis={handleFileChangePermis}
                                     allerAEtapeSuivante={allerAEtapeSuivante} 
                                     allerAEtapePrecedente={allerAEtapePrecedente} 
                                 />
@@ -231,6 +276,7 @@ function InscriptionEtape(props) {
                             <InscriptionTaxiVehicule 
                                 data={formVehicule} 
                                 onInputChange={handleInputVehicule} 
+                                onFileChangeVehicule={handleFileChangeVehicule}
                                 allerAEtapeSuivante={allerAEtapeSuivante} 
                                 allerAEtapePrecedente={allerAEtapePrecedente} 
                             />

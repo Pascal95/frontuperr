@@ -6,6 +6,8 @@ const Settings = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const token = localStorage.getItem('token');
+  const apiUrl = import.meta.env.REACT_APP_API_URL;
+
   const [formFiche, setformFiche] =useState({
     nom: '',
     prenom: '',
@@ -21,7 +23,7 @@ const Settings = () => {
     numSS:''
 })
   const fetchUserProfile = (token) => {
-    const url = 'https://backupper.onrender.com/api/users/profile';
+    const url = `${apiUrl}/api/users/profile`;
 
     setLoading(true);
     fetch(url, {

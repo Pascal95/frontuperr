@@ -19,6 +19,8 @@ function ChampsLogin(props) {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = React.useState(false);
     const [error, setError] = useState(null);
+    const apiUrl = import.meta.env.REACT_APP_API_URL;
+
     const navigate = useNavigate();
 
     const handleEmailChange = (event) => setEmail(event.target.value);
@@ -31,7 +33,7 @@ function ChampsLogin(props) {
     const handleSubmit = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch("https://backupper.onrender.com/api/users/login", {
+            const response = await fetch(`${apiUrl}/api/users/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -4,10 +4,23 @@ import { Box } from '@mui/system';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { styled } from '@mui/material/styles';
 
 function InscriptionTaxiVehicule(props) {
     
     const [erreurs, setErreurs] = useState([]);
+    const VisuallyHiddenInput = styled('input')({
+        clip: 'rect(0 0 0 0)',
+        clipPath: 'inset(50%)',
+        height: 1,
+        overflow: 'hidden',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        whiteSpace: 'nowrap',
+        width: 1,
+    });
 
     const validerFormulaire = () => {
         let erreursTemp = [];
@@ -80,6 +93,12 @@ function InscriptionTaxiVehicule(props) {
                     onChange={props.onInputChange}
                     value={props.data.numSerie} 
                 />
+            </Box>
+            <Box sx={{paddingBottom:"10px"}}>
+                <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+                    Scan permis
+                    <VisuallyHiddenInput type="file" onChange={props.handleFileChangeVehicule}/>
+                </Button>
             </Box>
             {erreurs.length > 0 && (
                 <Box sx={{ color: 'error.main' }}>

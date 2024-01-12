@@ -15,6 +15,8 @@ function InscriptionEtape1(props) {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({});
+    const apiUrl = import.meta.env.VITE_API_URL;
+
 
     const handleEmailChange = (event) => setEmail(event.target.value);
     const handlePasswordChange = (event) => setPassword(event.target.value);
@@ -52,8 +54,10 @@ function InscriptionEtape1(props) {
 
         setErrors(validationErrors);
         if (Object.keys(validationErrors).length === 0) {
+            
             try {
-                const response = await fetch("https://backupper.onrender.com/api/users/register", {
+                console.log(apiUrl)
+                const response = await fetch(`${apiUrl}/api/users/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
