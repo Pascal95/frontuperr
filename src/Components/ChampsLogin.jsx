@@ -19,7 +19,7 @@ function ChampsLogin(props) {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = React.useState(false);
     const [error, setError] = useState(null);
-    const apiUrl = import.meta.env.REACT_APP_API_URL;
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
 

@@ -9,6 +9,7 @@ import DashboardInit from "../Components/DashboardInit/DashboardInit";
 import Patient from "../Components/Patient/Patient";
 import ProtectedRoute from './ProtectedRoute';
 import Courses from "../Components/Courses/Courses";
+import AjouterBon from "../Components/AjouterBon/AjouterBon";
 
 const Router = () => {
   return (
@@ -18,13 +19,16 @@ const Router = () => {
         <Route 
           path="/Dashboard" 
           element={
+            <ProtectedRoute>
             <Dashboard />
+            </ProtectedRoute>
         }
         >
           <Route path="accueil" element={<DashboardInit />} />
           <Route path="courses" element={<Courses />} />
           <Route path="settings" element={<Settings />} />
           <Route path="patient" element={<Patient />} />
+          <Route path="BonTransport" element={<AjouterBon />} />
         </Route>
         <Route path="/Inscription" element={<Inscription />} />
         <Route path="/InscriptionEtape/:info" element={<InscriptionEtape/>} />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{useState, useEffect} from 'react';
 import navLinks from "../../assets/data/navLinks";
 import { NavLink } from "react-router-dom";
 import "./sidebar.css";
@@ -6,7 +6,7 @@ import logo from "../../assets/img/Logo_UPERMED.png"
 
 function Sidebar(props) {
   const token = localStorage.getItem('token');
-  const apiUrl = import.meta.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

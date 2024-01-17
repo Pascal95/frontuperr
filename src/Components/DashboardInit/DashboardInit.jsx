@@ -7,7 +7,7 @@ import { useJsApiLoader, GoogleMap, Marker, Autocomplete, DirectionsRenderer } f
 import moment from 'moment';
 
 function DashboardInit(props) {
-    const ApiKey = import.meta.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    const ApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
     const [map,setMap] = useState(/** @type google.maps.Map */ (null))
     const [directionsResponse, setDirectionsResponse] = useState(null)
     const [distance, setDistance] = useState('')
@@ -15,7 +15,7 @@ function DashboardInit(props) {
     const [isTypingOrigin, setIsTypingOrigin] = useState(false);
     const [isTypingDestination, setIsTypingDestination] = useState(false);
     const token = localStorage.getItem('token');
-    const apiUrl = import.meta.env.REACT_APP_API_URL;
+    const apiUrl = import.meta.env.VITE_API_URL;
     const [formData, setFormData] = useState({
         patient: '',
         numSecu: '',
