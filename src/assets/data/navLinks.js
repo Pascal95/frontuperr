@@ -36,7 +36,7 @@ const navLinks = [
     roles:[1]
   },
   {
-    path: "/Dashboard/BonValidate",
+    path: "/Dashboard/BonSuperviseur",
     icon: "ri-shopping-bag-line",
     display: "Bon de transport a valider",
     roles:[1]

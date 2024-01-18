@@ -10,6 +10,7 @@ import Patient from "../Components/Patient/Patient";
 import ProtectedRoute from './ProtectedRoute';
 import Courses from "../Components/Courses/Courses";
 import AjouterBon from "../Components/AjouterBon/AjouterBon";
+import BonSuperviseur from "../Components/BonSuperviseur/BonSuperviseur";
 
 const Router = () => {
   return (
@@ -29,6 +30,8 @@ const Router = () => {
           <Route path="settings" element={<Settings />} />
           <Route path="patient" element={<Patient />} />
           <Route path="BonTransport" element={<AjouterBon />} />
+          <Route path="BonSuperviseur" element={<BonSuperviseur />} />
+
         </Route>
         <Route path="/Inscription" element={<Inscription />} />
         <Route path="/InscriptionEtape/:info" element={<InscriptionEtape/>} />

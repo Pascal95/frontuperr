@@ -1,0 +1,12 @@
+.BonSuperviseur {
+    margin-top: 100px;
+    margin-left: 100px;
+    padding-bottom: 50px;
+}
+
+
+.BonSuperviseur__title {
+    color: var(--heading-color);
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
