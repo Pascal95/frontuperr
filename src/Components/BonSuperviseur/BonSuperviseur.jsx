@@ -31,8 +31,7 @@ function BonSuperviseur(props) {
     const handleViewPdf = (ficBon) => {
         window.open(`${apiUrl}/files/${ficBon}`, '_blank');
     };
-
-    const handleValidate = async (transportCount) => {
+    const handleValidate = async (transportCount,idBon) => {
         
         try {
             const response = await fetch(`${apiUrl}/api/bon/validateBon`, {
@@ -43,8 +42,8 @@ function BonSuperviseur(props) {
                 },
                 body: JSON.stringify({
                     idFiche: selectedUserId,
-                    idBonTransport: selectedBonId,
-                    nombreTransports: parseInt(transportCount, 10)
+                    idBonTransport: idBon,
+                    nombreTransports: transportCount
                 })
             });
     
@@ -64,8 +63,6 @@ function BonSuperviseur(props) {
     
 
     const handleRefuse = async (idBon) => {
-        const token = localStorage.getItem('token');
-        
         try {
             const response = await fetch(`${apiUrl}/api/bon/refuseBon`, {
                 method: 'POST',
@@ -79,6 +76,10 @@ function BonSuperviseur(props) {
                     messageRefus: refuseMessage
                 })
             });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Erreur lors de la validation du bon');
+            }
     
             // ... gestion de la réponse et des erreurs
             setOpenRefuseDialog(false);
@@ -90,6 +91,7 @@ function BonSuperviseur(props) {
     const handleClickOpen = (bon) => {
         setSelectedBonId(bon.idBon);
         setSelectedUserId(bon.ficheuser.idFiche);
+        setTransportCount(1); // Réinitialiser à une valeur par défaut
         setOpenDialog(true);
     };
     
@@ -99,13 +101,19 @@ function BonSuperviseur(props) {
     };
 
     const handleConfirm = () => {
-        // Logique pour valider le bon avec le nombre de transports
-        handleValidate(selectedBonId, transportCount);
+        const transportCountNumber = parseInt(transportCount, 10);
+        if (!isNaN(transportCountNumber) && transportCountNumber > 0) {
+            handleValidate(transportCountNumber, selectedBonId);
+        } else {
+            // Gérer l'erreur de valeur invalide
+        }
         setOpenDialog(false);
     };
+    
 
-    const handleRefuseClick = (idBon) => {
-        setSelectedBonId(idBon);
+    const handleRefuseClick = (bon) => {
+        setSelectedBonId(bon.idBon);
+        setSelectedUserId(bon.ficheuser.idFiche);
         setOpenRefuseDialog(true);
     };
 
@@ -186,7 +194,7 @@ function BonSuperviseur(props) {
                                         <i className = "ri-check-line" color='green'></i>
                                         
                                     </IconButton>
-                                    <IconButton onClick={() => handleRefuseClick(bon.idBon)}>
+                                    <IconButton onClick={() => handleRefuseClick(bon)}>
                                         <i className = "ri-close-line" color='red'></i>
                                     </IconButton>
                                 </TableCell>
