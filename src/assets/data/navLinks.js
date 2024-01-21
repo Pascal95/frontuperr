@@ -30,9 +30,9 @@ const navLinks = [
     roles:[1,3]
   },
   {
-    path: "/Dashboard/ListeUtilisateurs",
+    path: "/Dashboard/ListeTaxiValide",
     icon: "ri-shopping-bag-line",
-    display: "Liste des utilisateurs",
+    display: "Liste des taxis à valider",
     roles:[1]
   },
   {

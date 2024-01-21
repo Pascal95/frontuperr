@@ -119,6 +119,7 @@ function BonSuperviseur(props) {
 
     return (
         <div className="BonSuperviseur">
+            <h2 className="BonSuperviseur__title">Valider un bon de transport</h2>
             <Dialog open={openDialog} onClose={handleClose}>
                 <DialogTitle>Valider le Bon de Transport</DialogTitle>
                 <DialogContent>
