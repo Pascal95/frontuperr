@@ -12,6 +12,7 @@ import Courses from "../Components/Courses/Courses";
 import AjouterBon from "../Components/AjouterBon/AjouterBon";
 import BonSuperviseur from "../Components/BonSuperviseur/BonSuperviseur";
 import ListeTaxiValide from "../Components/ListeTaxiValide/ListeTaxiValide";
+import Disponibilite from "../Components/Planning/Disponibilite";
 
 const Router = () => {
   return (
@@ -33,6 +34,7 @@ const Router = () => {
           <Route path="BonTransport" element={<AjouterBon />} />
           <Route path="BonSuperviseur" element={<BonSuperviseur />} />
           <Route path="ListeTaxiValide" element={<ListeTaxiValide />} />
+          <Route path="Disponibilite" element={<Disponibilite />} />
 
         </Route>
         <Route path="/Inscription" element={<Inscription />} />

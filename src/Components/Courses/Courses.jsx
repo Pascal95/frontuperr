@@ -1,15 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './Courses.css';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import moment from 'moment';
 import 'moment/locale/fr';
 
 function Courses( props ) {
     const [reservations, setReservations] = useState([]);
+    const token = localStorage.getItem('token');
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         const fetchReservations = async () => {
-            const url = "https://backupper.onrender.com/api/reservation/nextresa";
-            const token = localStorage.getItem('token');
+            const url = `${apiUrl}/api/reservation/nextresa`;
             try {
                 const response = await fetch(url, {
                     method: 'GET',
@@ -40,26 +42,28 @@ function Courses( props ) {
     return (
         <div className='CoursesInit'>
             <h2 className="courses__title">Mes prochaines courses</h2>
-            <table className="Tableau">
-                <thead className='TableauTitle'>
-                    <tr>
-                        <th>Adresse de Départ</th>
-                        <th>Adresse d'Arrivée</th>
-                        <th>Heure de Départ</th>
-                        <th>Aller/Retour</th>
-                    </tr>
-                </thead>
-                <tbody className='TableauBody'>
+            <TableContainer component={Paper}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Adresse de Départ</TableCell>
+                        <TableCell>Adresse d'Arrivée</TableCell>
+                        <TableCell>Heure de Départ</TableCell>
+                        <TableCell>Aller/Retour</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
                     {reservations.map(reservation => (
-                        <tr key={reservation.idReservation}>
-                            <td>{reservation.AdresseDepart}</td>
-                            <td>{reservation.AdresseArrive}</td>
-                            <td>{formatDate(reservation.HeureDepart)}</td>
-                            <td>{reservation.AllerRetour ? 'Oui' : 'Non'}</td>
-                        </tr>
+                        <TableRow key={reservation.idReservation}>
+                            <TableCell>{reservation.AdresseDepart}</TableCell>
+                            <TableCell>{reservation.AdresseArrive}</TableCell>
+                            <TableCell>{formatDate(reservation.HeureDepart)}</TableCell>
+                            <TableCell>{reservation.AllerRetour ? 'Oui' : 'Non'}</TableCell>
+                        </TableRow>
                     ))}
-                </tbody>
-            </table>
+                </TableBody>
+            </Table>
+        </TableContainer>
         </div>
      );
 }

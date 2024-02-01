@@ -1,19 +1,21 @@
 import React, {useState, useEffect} from 'react';
 import './AjouterBon.css';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 
 function AjouterBon(props) {
     const [formData, setFormData] = React.useState({
+        idFicheUser: '',
         drPrescripteur: '',
         dateEmission: '',
     });
 
     const [bonTransportFile, setBonTransportFile] = useState(null);
     const [bons, setBons] = useState([]);
+    const [patients, setPatients] = useState([]);
     const token = localStorage.getItem('token');
     const apiUrl = import.meta.env.VITE_API_URL;
-    ``
+    
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -32,6 +34,7 @@ function AjouterBon(props) {
         e.preventDefault();
 
         const formDataApi = new FormData();
+        formDataApi.append('idFicheUser', formData.idFicheUser);
         formDataApi.append('drPrescripteur', formData.drPrescripteur);
         formDataApi.append('dateEmission', formData.dateEmission);
         
@@ -90,11 +93,52 @@ function AjouterBon(props) {
             return <i className="ri-loader-2-fill" color='orange'></i>;
         }
     };
+
+    useEffect(() => {
+        const fetchPatients = async () => {
+            try {
+                const response = await fetch(`${apiUrl}/api/users/mesusers`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des données');
+                }
+
+                const data = await response.json();
+                setPatients(data.listeUser);
+            } catch (error) {
+                console.error('Erreur:', error);
+            } finally {
+            }
+        };
+
+        fetchPatients();
+    }, []);
     return (
         <div className="AjouterBon">
             <h2 className="AjouterBon__title">Ajouter un bon de transport</h2>
             <form onSubmit={handleSubmit}>
+            <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Patient</InputLabel>
+            <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                name="idFicheUser"
+                value={formData.idFicheUser}
+                label="Patient"
+                onChange={handleInputChange}
+            >
+                {patients.map((patient) => (
+                    <MenuItem value={patient.idFiche}>{patient.nom} {patient.prenom}</MenuItem>
+                ))}
+            </Select>
+            </FormControl>
             <div className='form__group'>
+
                 <div>
                     <label htmlFor="">Nom du prescripteur</label>
                     <input type="text" name="drPrescripteur" id="drPrescripteur" placeholder="dr Lellouche" value={formData.drPrescripteur} onChange={handleInputChange}/>

@@ -9,19 +9,13 @@ const navLinks = [
     path: "/Dashboard/courses",
     icon: "ri-user-2-line",
     display: "Mes courses",
-    roles:[1,4,5]
+    roles:[1,3,4,5]
   },
   {
     path: "/Dashboard/patient",
     icon: "ri-taxi-line",
     display: "Mes patients",
     roles:[1,4,5]
-  },
-  {
-    path: "/Dashboard/settings",
-    icon: "ri-shopping-bag-line",
-    display: "Parametres",
-    roles:[1,2,3,4,5]
   },
   {
     path: "/Dashboard/Planning",
@@ -46,6 +40,18 @@ const navLinks = [
     icon: "ri-shopping-bag-line",
     display: "Ajouter un bon de transport",
     roles:[5]
+  },
+  {
+    path: "/Dashboard/Disponibilite",
+    icon: "ri-shopping-bag-line",
+    display: "Mes disponibilités",
+    roles:[1,3]
+  },
+  {
+    path: "/Dashboard/settings",
+    icon: "ri-shopping-bag-line",
+    display: "Parametres",
+    roles:[1,2,3,4,5]
   },
 ];
 
