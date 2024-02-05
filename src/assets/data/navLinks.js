@@ -48,6 +48,24 @@ const navLinks = [
     roles:[1,3]
   },
   {
+    path: "/Dashboard/Messages",
+    icon: "ri-shopping-bag-line",
+    display: "Mes messages",
+    roles:[3,4,5]
+  },
+  {
+    path: "/Dashboard/NewMessages",
+    icon: "ri-shopping-bag-line",
+    display: "Envoyer un message",
+    roles:[1]
+  },
+  {
+    path: "/Dashboard/CourseSup",
+    icon: "ri-shopping-bag-line",
+    display: "Les prochaines courses",
+    roles:[1]
+  },
+  {
     path: "/Dashboard/settings",
     icon: "ri-shopping-bag-line",
     display: "Parametres",

@@ -13,6 +13,9 @@ import AjouterBon from "../Components/AjouterBon/AjouterBon";
 import BonSuperviseur from "../Components/BonSuperviseur/BonSuperviseur";
 import ListeTaxiValide from "../Components/ListeTaxiValide/ListeTaxiValide";
 import Disponibilite from "../Components/Planning/Disponibilite";
+import Message from "../Components/Message/Message";
+import EnvoiMessage from "../Components/EnvoiMessage/EnvoiMessage";
+import CourseSup from "../Components/CourseSup/CourseSup";
 
 const Router = () => {
   return (
@@ -35,6 +38,9 @@ const Router = () => {
           <Route path="BonSuperviseur" element={<BonSuperviseur />} />
           <Route path="ListeTaxiValide" element={<ListeTaxiValide />} />
           <Route path="Disponibilite" element={<Disponibilite />} />
+          <Route path="Messages" element={<Message />} />
+          <Route path="NewMessages" element={<EnvoiMessage />} />
+          <Route path="CourseSup" element={<CourseSup />} />
 
         </Route>
         <Route path="/Inscription" element={<Inscription />} />

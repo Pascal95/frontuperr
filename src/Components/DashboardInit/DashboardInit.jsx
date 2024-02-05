@@ -116,6 +116,11 @@ function DashboardInit(props) {
         const distanceMatch = directionsResponse.routes[0].legs[0].distance.text.match(/(\d+\.?\d*)/);
         const distanceValue = distanceMatch ? parseFloat(distanceMatch[0]) : 0;
 
+        if (distanceValue < 15){
+            setSnackbar({ open: true, message: "La distance est inférieure à 15 km", severity: 'error' });
+            setIsLoading(false);
+            return;
+        }
         const reservationData = {
             ...formData,
             HeureDepart: heureDepart,

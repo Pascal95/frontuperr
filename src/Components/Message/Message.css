@@ -1,0 +1,12 @@
+.Message{
+    margin-top: 100px;
+    margin-left: 100px;
+    padding-bottom: 50px;
+}
+
+
+.Message__title {
+    color: var(--heading-color);
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
