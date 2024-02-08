@@ -1,17 +1,8 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/system';
-import Input from '@mui/material/Input';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import {Grid, Input, FormControl, InputLabel, InputAdornment, IconButton, Typography, Button, Link, CircularProgress, Backdrop, Snackbar, TextField } from '@mui/material';
+import {AccountCircle, Visibility, VisibilityOff} from '@mui/icons-material';
 import LockIcon from '@mui/icons-material/Lock';
-import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
-import {CircularProgress, Backdrop, Snackbar, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function ChampsLogin(props) {
@@ -58,19 +49,13 @@ function ChampsLogin(props) {
     };
 
     return (
-        <Box sx={{
-            backgroundColor: "#F5F5F5",
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            maxWidth: '400px', 
-            margin: 'auto',
-            borderRadius: '7px',
-            marginTop: '40%'
-        }}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
+        <Box sx={{ p: 5, bgcolor: 'background.paper', borderRadius: 2 }}>
+            <Typography variant="h5" component="h1" gutterBottom>
+                    Connexion
+                </Typography>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                    <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
                     <InputLabel htmlFor="input-with-icon-adornment">
                         Email
                     </InputLabel>
@@ -85,9 +70,10 @@ function ChampsLogin(props) {
                     }
                     />
                 </FormControl>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
+                    </Grid>
+                </Grid>
+
+                <Grid item xs={12}>                <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
                     <InputLabel htmlFor="standard-adornment-password">Mot de passe</InputLabel>
                     <Input
                         id="standard-adornment-password"
@@ -112,9 +98,13 @@ function ChampsLogin(props) {
                         }
                     />
                 </FormControl>
-            </Box>
+                </Grid>
+                <Grid item xs={12}>
             <Link href="/Inscription">S'inscrire</Link>
+            </Grid>
+            <Grid item xs={12}>
             <Button variant="contained" sx={{ mt: 2 }} onClick={handleSubmit}>Se connecter</Button>
+            </Grid>
             <Backdrop 
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={isLoading}

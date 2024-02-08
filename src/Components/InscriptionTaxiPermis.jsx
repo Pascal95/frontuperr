@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
-import TextField from '@mui/material/TextField';
+import {TextField, Typography, styled, Button, Stack, Grid} from '@mui/material';
 import { Box } from '@mui/system';
-import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/fr';
 import SendIcon from '@mui/icons-material/Send';
@@ -28,80 +24,100 @@ function InscriptionTaxiPermis(props) {
 
 
     const validerFormulaire = () => {
-    let erreursTemp = [];
-    const dateActuelle = new Date();
+        let erreursTemp = [];
+        const dateActuelle = new Date();
 
-    // Vérifier que numPermis est un entier
-    if (!/^\d+$/.test(props.data.numPermis)) {
-        erreursTemp.push('Le numéro de permis doit contenir uniquement des chiffres.');
-    }
+        if (!/^\d+$/.test(props.data.numPermis)) {
+            erreursTemp.push('Le numéro de permis doit contenir uniquement des chiffres.');
+        }
 
-    // Vérifier que les dates ne sont pas vides et que la date d'expiration est valide
-    if (!props.data.dateDel) {
-        erreursTemp.push('La date de délivrance ne peut pas être vide.');
-    }
-    if (!props.data.dateExpi) {
-        erreursTemp.push('La date d\'expiration ne peut pas être vide.');
-    } else if (new Date(props.data.dateExpi) <= dateActuelle) {
-        erreursTemp.push('La date d\'expiration doit être supérieure à la date actuelle.');
-    }
+        if (!props.data.dateDel) {
+            erreursTemp.push('La date de délivrance ne peut pas être vide.');
+        }
+        if (!props.data.dateExpi) {
+            erreursTemp.push('La date d\'expiration ne peut pas être vide.');
+        } else if (new Date(props.data.dateExpi) <= dateActuelle) {
+            erreursTemp.push('La date d\'expiration doit être supérieure à la date actuelle.');
+        }
 
-    setErreurs(erreursTemp);
+        setErreurs(erreursTemp);
 
-    // Si tout est valide, aller à l'étape suivante
-    if (erreursTemp.length === 0) {
-        props.allerAEtapeSuivante();
-    }
+        if (erreursTemp.length === 0) {
+            props.allerAEtapeSuivante();
+        }
     };
 
 
     return (
-        <Box component="form" >
-            <Typography variant="h3" gutterBottom>
-                Information sur le permis
-            </Typography>
-            <Box sx={{paddingBottom:"10px"}}>
-                <TextField 
-                    id="standard-basic" 
-                    name="numPermis"
-                    label="Numero de permis" 
-                    variant="standard" 
-                    
-                    onChange={props.onInputChange}
-                    value={props.data.numPermis}
-                />
-                
+        <LocalizationProvider dateAdapter={AdapterDayjs} locale="fr">
+            <Box 
+                sx={{ 
+                    p: 3, 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    gap: 2,
+                    bgcolor: 'background.paper', 
+                    borderRadius: 2,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}
+            >
+                <Typography variant="h5" component="h1" gutterBottom>
+                    Information sur le permis
+                </Typography>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <TextField
+                            name="numPermis"
+                            label="Numéro de permis"
+                            variant="outlined"
+                            fullWidth
+                            onChange={props.onInputChange}
+                            value={props.data.numPermis}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <DatePicker
+                            label="Date de délivrance"
+                            value={props.data.dateDel}
+                            onChange={(newValue) => props.onInputChange({ target: { name: 'dateDel', value: newValue } })}
+                            renderInput={(params) => <TextField {...params} fullWidth />}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <DatePicker
+                            label="Date d'expiration"
+                            value={props.data.dateExpi}
+                            onChange={(newValue) => props.onInputChange({ target: { name: 'dateExpi', value: newValue } })}
+                            renderInput={(params) => <TextField {...params} fullWidth />}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
+                            Scan permis
+                            <input hidden type="file" name="permis" onChange={props.onFileChangePermis} />
+                        </Button>
+                        {props.nomFichierPermis && ( // Utilisez la prop pour afficher le nom du fichier
+                            <Typography variant="body2" sx={{ marginTop: 2 }}>
+                                Fichier sélectionné : {props.nomFichierPermis}
+                            </Typography>
+                        )}
+                    </Grid>
+                    <Stack spacing={1}>
+                        {erreurs.map((erreur, index) => (
+                            <Typography key={index} color="error">{erreur}</Typography>
+                        ))}
+                    </Stack>
+                    <Grid item xs={12} container justifyContent="center">
+                        <Button variant="contained" onClick={validerFormulaire} endIcon={<SendIcon />}>
+                            Suivant
+                        </Button>
+                    </Grid>
+                </Grid>
             </Box>
-            <Box sx={{paddingBottom:"10px"}}>
-            <label>Date de délivrance</label>
-            <input type="date" name="dateDel" value={props.data.dateDel} onChange={props.onInputChange} />
-
-            </Box>
-            <Box sx={{paddingBottom:"10px"}}>
-                <label>Date d'expiration</label>
-                <input type="date" name="dateExpi" value={props.data.dateExpi} onChange={props.onInputChange} />
-            </Box>
-            <Box sx={{paddingBottom:"10px"}}>
-                <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
-                    Scan permis
-                    <VisuallyHiddenInput name="permis" type="file" onChange={props.onFileChangePermis}/>
-                </Button>
-            </Box>
-
-            {erreurs.length > 0 && (
-                <Box sx={{ color: 'error.main' }}>
-                    {erreurs.map((erreur, index) => (
-                        <Typography key={index} color="error">{erreur}</Typography>
-                    ))}
-                </Box>
-            )}
-
-            <Button variant="contained" onClick={validerFormulaire} endIcon={<SendIcon />}>
-                Suivant
-            </Button>
-
-        </Box>
+        </LocalizationProvider>
     );
+
 }
 
 export default InscriptionTaxiPermis;

@@ -200,21 +200,21 @@ function DashboardInit(props) {
         <div className="DashboardInit">
             <h2 className="dashboard__title">Réserver un taxi</h2>
             <form onSubmit={handleSubmit}>
-            <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Patient</InputLabel>
-            <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                name="idFicheUser"
-                value={formData.idFicheUser}
-                label="Patient"
-                onChange={handleInputChange}
-            >
-                {patients.map((patient) => (
-                    <MenuItem value={patient.idFiche}>{patient.nom} {patient.prenom}</MenuItem>
-                ))}
-            </Select>
-            </FormControl>
+                <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Patient</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        name="idFicheUser"
+                        value={formData.idFicheUser}
+                        label="Patient"
+                        onChange={handleInputChange}
+                    >
+                        {patients.map((patient) => (
+                            <MenuItem value={patient.idFiche}>{patient.nom} {patient.prenom}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
             <Autocomplete
                 onLoad={(autocomplete) => { originRef.current = autocomplete; }}
                 onPlaceChanged={() => {

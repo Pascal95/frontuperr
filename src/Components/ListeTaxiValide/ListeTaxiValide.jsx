@@ -149,7 +149,7 @@ function Row({ row }) {
                         <TableCell>{row.permis.dateDel}</TableCell>
                         <TableCell>{row.permis.dateExpi}</TableCell>
                         <TableCell>                                    
-                          <IconButton onClick={() => handleViewPdf(row.permis.ficpermis)}>
+                          <IconButton onClick={() => handleViewPdf(row.permis.ficPermis)}>
                             <i className = "ri-eye-line" color='green'></i>
                           </IconButton>
                         </TableCell>
@@ -163,6 +163,7 @@ function Row({ row }) {
                   <TableHead>
                     <TableRow>
                       <TableCell>Marque</TableCell>
+                      <TableCell>Modele</TableCell>
                       <TableCell>Année</TableCell>
                       <TableCell>Numéro d'immatriculation</TableCell>
                       <TableCell>Numéro de série</TableCell>

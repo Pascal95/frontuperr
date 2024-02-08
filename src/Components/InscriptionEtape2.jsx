@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
+import { Grid, InputLabel, MenuItem, FormControl, Select, TextField, Typography, Button } from '@mui/material';
 import { Box } from '@mui/system';
-import Typography from '@mui/material/Typography';
 import SendIcon from '@mui/icons-material/Send';
-import Button from '@mui/material/Button';
-
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 
 function InscriptionEtape2(props) {
@@ -36,115 +30,118 @@ function InscriptionEtape2(props) {
     };
 
     return (
-        <Box 
-        component="form" 
-        sx={{
-            backgroundColor: "#F5F5F5",
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            maxWidth: '400px', 
-            margin: 'auto',
-            borderRadius: '7px'}}>
-            <Typography variant="h3" gutterBottom>
-                Information de l'utilisateur
-            </Typography>
-            <Box sx={{paddingBottom:"10px"}}>
-                <TextField 
-                    id="standard-basic" 
-                    name="nom" 
-                    label="Nom"     
-                    onChange={props.onInputChange}
-                    value={props.data.nom} 
-                    variant="standard" />
-            </Box>
-            <Box sx={{paddingBottom:"10px"}}>
-                <TextField 
-                    id="standard-basic" 
-                    name="prenom" 
-                    label="Prenom"  
-                    variant="standard" 
-                    onChange={props.onInputChange}
-                    value={props.data.prenom} 
-                />
-            </Box>
-            <Box sx={{paddingBottom:"10px"}}>
-                <TextField 
-                    id="standard-basic" 
-                    name="adresse" 
-                    label="Adresse"  
-                    variant="standard" 
-                    onChange={props.onInputChange}
-                    value={props.data.adresse} 
-                />
-            </Box>
-            <Box sx={{paddingBottom:"10px"}}>
-                <TextField 
-                    id="standard-basic" 
-                    name="ville" 
-                    label="Ville"  
-                    variant="standard" 
-                    onChange={props.onInputChange}
-                    value={props.data.ville} 
-                />
-            </Box>
-            <Box sx={{paddingBottom:"10px"}}>
-                <TextField 
-                    id="standard-basic" 
-                    name="codepostal" 
-                    label="Code postal"  
-                    variant="standard"
-                    onChange={props.onInputChange}
-                    value={props.data.codepostal}  
-                />
-            </Box>
-            <Box sx={{paddingBottom:"10px"}}>
-                <TextField 
-                    id="standard-basic" 
-                    name="mailcontact" 
-                    label="Mail de contact"  
-                    variant="standard" 
-                    onChange={props.onInputChange}
-                    value={props.data.mailcontact}  
-                />
-                </Box>
-            <Box sx={{paddingBottom:"10px"}}>
-                <TextField 
-                    id="standard-basic" 
-                    name="telephone" 
-                    label="Telephone"  
-                    variant="standard" 
-                    onChange={props.onInputChange}
-                    value={props.data.telephone} 
-                />
-            </Box>
-            <FormControl variant="standard" sx={{m: 1, width: '22ch'}}>
-                <InputLabel id="demo-simple-select-label">Role</InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    name="role"
-                    value={props.data.role}
-                    label="Role"
-                    onChange={props.onInputChange}
-                >
-                    <MenuItem value={3}>Taxi</MenuItem>
-                    <MenuItem value={4}>Medecin</MenuItem>
-                    <MenuItem value={5}>Utilisateur</MenuItem>
-                </Select>
-            </FormControl>
-            {erreurs.length > 0 && (
-                <Box sx={{ color: 'error.main' }}>
-                    {erreurs.map((erreur, index) => (
-                        <Typography key={index} color="error">{erreur}</Typography>
-                    ))}
-                </Box>
-            )}
-            <Button variant="contained" onClick={validerFormulaire} endIcon={<SendIcon />}>
-                Suivant
-            </Button>
+            <Box sx={{ p: 5, bgcolor: 'background.paper', borderRadius: 2 }}>
+                <Typography variant="h4" gutterBottom align="center">
+                    Information de l'utilisateur
+                </Typography>
+                <form autoComplete="off">
+                    <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <TextField 
+                            name="nom" 
+                            label="Nom"   
+                            fullWidth  
+                            margin="normal"
+                            onChange={props.onInputChange}
+                            value={props.data.nom}  
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField 
+                            name="prenom" 
+                            label="Prenom"  
+                            fullWidth  
+                            margin="normal"
+                            onChange={props.onInputChange}
+                            value={props.data.prenom} 
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField 
+                            name="adresse" 
+                            label="Adresse"  
+                            fullWidth  
+                            margin="normal"
+                            onChange={props.onInputChange}
+                            value={props.data.adresse} 
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField 
+                            name="ville" 
+                            label="Ville"  
+                            fullWidth  
+                            margin="normal"
+                            onChange={props.onInputChange}
+                            value={props.data.ville} 
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField 
+                            name="codepostal" 
+                            label="Code postal"  
+                            fullWidth  
+                            margin="normal"
+                            onChange={props.onInputChange}
+                            value={props.data.codepostal}  
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField 
+                            name="mailcontact" 
+                            label="Mail de contact"  
+                            fullWidth  
+                            margin="normal"
+                            type='email'
+                            onChange={props.onInputChange}
+                            value={props.data.mailcontact}  
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField 
+                            name="telephone" 
+                            label="Telephone"  
+                            fullWidth  
+                            margin="normal"
+                            onChange={props.onInputChange}
+                            value={props.data.telephone} 
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormControl fullWidth >
+                            <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                name="role"
+                                value={props.data.role}
+                                label="Role"
+                                onChange={props.onInputChange}
+                            >
+                                <MenuItem value={3}>Taxi</MenuItem>
+                                <MenuItem value={4}>Medecin</MenuItem>
+                                <MenuItem value={5}>Utilisateur</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    {erreurs.length > 0 && (
+                        <Grid item xs={12}>
+                            <Box sx={{ color: 'error.main' }}>
+                                {erreurs.map((erreur, index) => (
+                                    <Typography key={index} color="error">{erreur}</Typography>
+                                ))}
+                            </Box>
+                        </Grid>
+                    )}
+                    <Grid item xs={12} container justifyContent="center">
+                        <Button variant="contained" onClick={validerFormulaire} endIcon={<SendIcon />}>
+                            Suivant
+                        </Button>
+                    </Grid>
+                </Grid>
+                </form>
         </Box>
+        
     );
 }
 

@@ -4,7 +4,9 @@ import InscriptionEtape2 from '../Components/InscriptionEtape2';
 import InscriptionTaxiPermis from '../Components/InscriptionTaxiPermis';
 import InscriptionTaxiVehicule from '../Components/InscriptionTaxiVehicule';
 import exampleImage from '../image/taxi.jpg';
-import { Box, Grid } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+
+import { Box, Grid, Typography, Button } from '@mui/material';
 import VoitureMickael from '../assets/img/mercedes.jpeg';
 
 
@@ -16,6 +18,8 @@ function InscriptionEtape(props) {
     const [etape, setEtape] = useState(1);
     const [idFiiche, setidFiiche] = useState(0);
     const apiUrl = import.meta.env.VITE_API_URL;
+    const [nomFichierPermis, setNomFichierPermis] = useState('');
+    const [nomFichierVehicule, setNomFichierVehicule] = useState('');
     const [formFiche, setformFiche] =useState({
         nom: '',
         prenom: '',
@@ -147,7 +151,6 @@ function InscriptionEtape(props) {
             formData.append('Annee', formVehicule.Annee);
             formData.append('numImmatriculation', formVehicule.numImmatriculation);
             formData.append('numSerie', formVehicule.numSerie);
-            formData.append('carteGrise', formVehicule.carteGrise);
             formData.append('idFiche', formVehicule.idFiche);
 
         
@@ -202,15 +205,17 @@ function InscriptionEtape(props) {
                 ...formPermis,
                 permis: e.target.files[0]
             });
+            setNomFichierPermis(e.target.files[0].name);
         }
     };
 
     const handleFileChangeVehicule = (e) => {
         if (e.target.files && e.target.files[0]) {
-            setformPermis({
+            setformVehicule({
                 ...formVehicule,
                 carteGrise: e.target.files[0]
             });
+            setNomFichierVehicule(e.target.files[0].name);
         }
     };
     
@@ -230,7 +235,7 @@ function InscriptionEtape(props) {
                     <Grid item xs={12} md={6}>
                         <Box
                             sx={{
-                                backgroundImage: `url(${exampleImage})`,
+                                backgroundImage: `url(${VoitureMickael})`,
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center',
                                 height: '100vh', // ajustez selon vos besoins
@@ -251,12 +256,13 @@ function InscriptionEtape(props) {
                                     onFileChangePermis={handleFileChangePermis}
                                     allerAEtapeSuivante={allerAEtapeSuivante} 
                                     allerAEtapePrecedente={allerAEtapePrecedente} 
+                                    nomFichierPermis={nomFichierPermis}
                                 />
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <Box
                                     sx={{
-                                        backgroundImage: `url(${exampleImage})`,
+                                        backgroundImage: `url(${VoitureMickael})`,
                                         backgroundSize: 'cover',
                                         backgroundPosition: 'center',
                                         height: '100vh', // ajustez selon vos besoins
@@ -279,6 +285,7 @@ function InscriptionEtape(props) {
                                 onFileChangeVehicule={handleFileChangeVehicule}
                                 allerAEtapeSuivante={allerAEtapeSuivante} 
                                 allerAEtapePrecedente={allerAEtapePrecedente} 
+                                nomFichierVehicule={nomFichierVehicule}
                             />
                         </Grid>
                         <Grid item xs={12} md={6}>
@@ -295,7 +302,37 @@ function InscriptionEtape(props) {
                 </Box>
                 );
         default:
-            return 'Inscription terminé vous serez recontacté lors de la confirmation de votre inscription';
+            return (
+                <Box sx={{ flexGrow: 1 }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <Box sx={{ p: 5, bgcolor: 'background.paper', borderRadius: 2 }}>
+                            <Typography variant="h4" gutterBottom>
+                            {formFiche.role === 3 ? 'Merci pour votre inscription en tant que Taxi!' : 'Inscription réussie!'}
+                        </Typography>
+                        <Typography variant="body1" sx={{ mb: 4 }}>
+                            {formFiche.role === 3 
+                                ? 'Vous recevrez un email une fois que votre compte et vos documents seront confirmés.'
+                                : 'Vous pouvez maintenant vous connecter à la plateforme.'}
+                        </Typography>
+                        <Button variant="contained" href="/" endIcon={<SendIcon />}>
+                            Aller à la page de connexion
+                        </Button>
+                        </Box>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                                <Box
+                                    sx={{
+                                        backgroundImage: `url(${VoitureMickael})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        height: '100vh', // ajustez selon vos besoins
+                                    }}
+                                />
+                        </Grid>
+                    </Grid>
+                </Box>
+                );
     }
 }
 
