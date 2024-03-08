@@ -49,13 +49,22 @@ function ChampsLogin(props) {
     };
 
     return (
-        <Box sx={{ p: 5, bgcolor: 'background.paper', borderRadius: 2 }}>
+        <Box sx={{
+            backgroundColor: "#F5F5F5",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            maxWidth: '400px', 
+            margin: 'auto',
+            padding: '20px',
+            borderRadius: '7px',
+            marginTop: '40%'
+        }}>
             <Typography variant="h5" component="h1" gutterBottom>
                     Connexion
                 </Typography>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                    <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
+                <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
                     <InputLabel htmlFor="input-with-icon-adornment">
                         Email
                     </InputLabel>
@@ -70,8 +79,6 @@ function ChampsLogin(props) {
                     }
                     />
                 </FormControl>
-                    </Grid>
-                </Grid>
 
                 <Grid item xs={12}>                <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
                     <InputLabel htmlFor="standard-adornment-password">Mot de passe</InputLabel>

@@ -214,7 +214,9 @@ function ListeTaxiValide(props) {
 
     return (
         <div className="ListeTaxiValide">
-            <h1>Liste des taxis non validés</h1>
+                            <Typography variant="h4" gutterBottom color="white">
+                    Taxi à valider
+                </Typography>
             <TableContainer component={Paper}>
                 <Table>
                 <TableHead>

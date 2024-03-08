@@ -8,6 +8,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Input from '@mui/material/Input';
 import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 function InscriptionEtape1(props) {
     const [email, setEmail] = useState('');
@@ -96,6 +97,9 @@ function InscriptionEtape1(props) {
             borderRadius: '7px',
             marginTop: '40%'
         }}>
+                        <Typography variant="h5" component="h1" gutterBottom>
+                    Inscription
+                </Typography>
             <Box>
                 <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
                     <InputLabel htmlFor="input-with-icon-adornment">

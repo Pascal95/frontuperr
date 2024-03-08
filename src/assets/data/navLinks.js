@@ -18,12 +18,6 @@ const navLinks = [
     roles:[1,4,5]
   },
   {
-    path: "/Dashboard/Planning",
-    icon: "ri-shopping-bag-line",
-    display: "Planning",
-    roles:[1,3]
-  },
-  {
     path: "/Dashboard/ListeTaxiValide",
     icon: "ri-shopping-bag-line",
     display: "Liste des taxis à valider",
@@ -58,6 +52,12 @@ const navLinks = [
     icon: "ri-shopping-bag-line",
     display: "Envoyer un message",
     roles:[1]
+  },
+  {
+    path: "/Dashboard/InscriptionComplet",
+    icon: "ri-alert-line",
+    display: "Inscription à compléter",
+    roles: [3] // Assumons que seul le rôle 3 (Taxi) a besoin de compléter l'inscription
   },
   {
     path: "/Dashboard/CourseSup",

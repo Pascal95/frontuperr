@@ -16,6 +16,7 @@ import Disponibilite from "../Components/Planning/Disponibilite";
 import Message from "../Components/Message/Message";
 import EnvoiMessage from "../Components/EnvoiMessage/EnvoiMessage";
 import CourseSup from "../Components/CourseSup/CourseSup";
+import InscriptionComplet from "../Components/InscriptionComplet/InscriptionComplet";
 
 const Router = () => {
   return (
@@ -41,7 +42,7 @@ const Router = () => {
           <Route path="Messages" element={<Message />} />
           <Route path="NewMessages" element={<EnvoiMessage />} />
           <Route path="CourseSup" element={<CourseSup />} />
-
+          <Route path="InscriptionComplet" element={<InscriptionComplet />} />
         </Route>
         <Route path="/Inscription" element={<Inscription />} />
         <Route path="/InscriptionEtape/:info" element={<InscriptionEtape/>} />

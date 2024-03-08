@@ -75,7 +75,7 @@ function Message(props) {
                             {selectedMessage.objet}
                         </Typography>
                         <Typography variant="subtitle1" gutterBottom>
-                            {`De: ${selectedMessage.destinataire.nom} ${selectedMessage.destinataire.prenom}`}
+                            {`Pour: ${selectedMessage.destinataire.nom} ${selectedMessage.destinataire.prenom}`}
                         </Typography>
                         <Typography variant="body1">{selectedMessage.contenu}</Typography>
                     </Paper>
