@@ -17,6 +17,8 @@ import Message from "../Components/Message/Message";
 import EnvoiMessage from "../Components/EnvoiMessage/EnvoiMessage";
 import CourseSup from "../Components/CourseSup/CourseSup";
 import InscriptionComplet from "../Components/InscriptionComplet/InscriptionComplet";
+import InscriptionTaxi from "../Pages/InscriptionTaxi";
+
 
 const Router = () => {
   return (
@@ -46,6 +48,7 @@ const Router = () => {
         </Route>
         <Route path="/Inscription" element={<Inscription />} />
         <Route path="/InscriptionEtape/:info" element={<InscriptionEtape/>} />
+        <Route path="/InscriptionTaxi/:key" element={<InscriptionTaxi />} />
     </Routes>
   );
 };
