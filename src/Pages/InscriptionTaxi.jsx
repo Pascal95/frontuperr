@@ -48,8 +48,14 @@ function InscriptionTaxi(props) {
             atteststagecontinue: null,
             attestmedicale: null,
             cartepro: null,
+            permis: null,
         },
         etape5: {
+            numPermis:'',
+            dateDel:'',
+            dateExpi:'',
+        },    
+        etape6: {
             paymentMethodId: '',
         },
     });
@@ -163,35 +169,58 @@ function InscriptionTaxi(props) {
             console.log('[error]', error);
             return;
         }
-    
-        console.log('[PaymentMethod]', paymentMethod);
-        console.log('Envoi des données à l\'API:', donneesInscription);
         
-    // Attends une mise à jour de l'état
-    await new Promise(resolve => setTimeout(resolve, 0));
+        // Attends une mise à jour de l'état
+        await new Promise(resolve => setTimeout(resolve, 0));
 
-    // Utilisation de FormData pour inclure les fichiers et les données textuelles
-    const formData = new FormData();
+        // Utilisation de FormData pour inclure les fichiers et les données textuelles
+        const formData = new FormData();
 
 
-    formData.append('key', donneesInscription.key);
-    // Ajoute les données textuelles
-    Object.keys(donneesInscription).forEach(etape => {
-        Object.keys(donneesInscription[etape]).forEach(cle => {
-            const valeur = donneesInscription[etape][cle];
-            if (typeof valeur !== 'object' || valeur === null) { // Assure-toi que c'est du texte ou null
-                formData.append(`${etape}[${cle}]`, valeur);
+        // Ajoute les données textuelles
+        formData.append('key', donneesInscription.key);
+
+        // Ajout des champs de l'étape 1
+        formData.append('etape1[password]', donneesInscription.etape1.password);
+        formData.append('etape1[confirmPassword]', donneesInscription.etape1.confirmPassword);
+        
+        // Ajout des champs de l'étape 2
+        formData.append('etape2[nom]', donneesInscription.etape2.nom);
+        formData.append('etape2[prenom]', donneesInscription.etape2.prenom);
+        formData.append('etape2[adresse]', donneesInscription.etape2.adresse);
+        formData.append('etape2[codepostal]', donneesInscription.etape2.codepostal);
+        formData.append('etape2[ville]', donneesInscription.etape2.ville);
+        formData.append('etape2[telephone]', donneesInscription.etape2.telephone);
+        
+        // Ajout des champs de l'étape 3 (y compris le fichier si présent)
+        formData.append('etape3[marquevehicule]', donneesInscription.etape3.marquevehicule);
+        formData.append('etape3[modele]', donneesInscription.etape3.modele);
+        formData.append('etape3[annee]', donneesInscription.etape3.annee);
+        formData.append('etape3[couleurvehicule]', donneesInscription.etape3.couleurvehicule);
+        formData.append('etape3[pecPMR]', donneesInscription.etape3.pecPMR);
+        formData.append('etape3[immatriculation]', donneesInscription.etape3.immatriculation);
+        if (donneesInscription.etape3.controletechnique instanceof File) {
+            formData.append('controletechnique', donneesInscription.etape3.controletechnique);
+        }
+        // Étape 4 - pour chaque fichier dans l'étape 4
+        Object.keys(donneesInscription.etape4).forEach(cle => {
+            if (donneesInscription.etape4[cle] instanceof File) {
+                formData.append(cle, donneesInscription.etape4[cle]);
             }
         });
-    });
+
+    // Ajout des champs de l'étape 5
+    formData.append('etape5[numPermis]', donneesInscription.etape5.numPermis);
+    formData.append('etape5[dateDel]', donneesInscription.etape5.dateDel);
+    formData.append('etape5[dateExpi]', donneesInscription.etape5.dateExpi);
+
+    // Ajout des champs de l'étape 6
+    formData.append('etape6[paymentMethodId]', paymentMethod.id);
 
     // Ajoute les fichiers
-    formData.append('controletechnique', donneesInscription.etape3.controletechnique);
-    Object.keys(donneesInscription.etape4).forEach(cle => {
-        if (donneesInscription.etape4[cle] instanceof File) {
-            formData.append(cle, donneesInscription.etape4[cle]);
-        }
-    });
+
+
+
     try {
         const response = await fetch(`${apiUrl}/api/users/completetaxi`, {
             method: 'POST',
@@ -223,9 +252,11 @@ function InscriptionTaxi(props) {
         case 4:
             return <Etape4 donneesInscription={donneesInscription} majDonnees={handleChange} handleFileChange={handleFileChange} />;
         case 5:
+            return <Etape5 donneesInscription={donneesInscription} majDonnees={handleChange} handleFileChange={handleFileChange} />;
+        case 6:
             return (
                 
-                    <Etape5 />
+                    <Etape6 />
                 
             );
         default:
@@ -251,7 +282,7 @@ function InscriptionTaxi(props) {
             {etape > 1 && (
             <button onClick={etapePrecedente}>Étape Précédente</button>
             )}
-            {etape < 5 ? (
+            {etape < 6 ? (
             <button onClick={etapeSuivante}>Étape Suivante</button>
             ) : (
             <button onClick={envoyerInscription}>Envoyer Inscription</button>
@@ -565,11 +596,76 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
                     onChange={handleFileChange} />
                 </Button>
             </Box>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
+                Permis de conduire
+                    <input 
+                    hidden 
+                    type="file" 
+                    name="permis" 
+                    accept="image/*,.pdf"
+                    onChange={handleFileChange} />
+                </Button>
+            </Box>
         </div>
         );
 }
 
-function Etape5({ donneesInscription, majDonnees }) {
+function Etape5 ({ donneesInscription, majDonnees }) {
+    return (
+        <div>
+            Étape 5: Permis de conduire
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
+                    <InputLabel >Numéro de permis</InputLabel>
+                    <Input
+                        id="standard"
+                        name='numPermis'
+                        value={donneesInscription.etape5.numPermis}
+                        onChange={majDonnees}
+                    />
+                </FormControl>
+            </Box>
+            
+        
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+    <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
+        <TextField
+            id="date-delivrance"
+            label="Date de délivrance"
+            type="date"
+            name='dateDel'
+            value={donneesInscription.etape5.dateDel}
+            onChange={majDonnees}
+            InputLabelProps={{
+                shrink: true,
+            }}
+            variant="standard"
+        />
+    </FormControl>
+</Box>
+<Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+    <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
+        <TextField
+            id="date-expiration"
+            label="Date d'expiration"
+            type="date"
+            name='dateExpi'
+            value={donneesInscription.etape5.dateExpi}
+            onChange={majDonnees}
+            InputLabelProps={{
+                shrink: true,
+            }}
+            variant="standard"
+        />
+    </FormControl>
+</Box>
+        </div>
+    );
+}
+
+
+function Etape6({ donneesInscription, majDonnees }) {
 
     const CARD_ELEMENT_OPTIONS = {
         style: {
@@ -592,7 +688,7 @@ function Etape5({ donneesInscription, majDonnees }) {
 
     return (
         <div>
-            Étape 5: Paiement
+            Étape 6: Paiement
             <Box>
             <label style={{ color: '#000', display: 'block', marginBottom: '10px' }}>
                 Numéro de carte
