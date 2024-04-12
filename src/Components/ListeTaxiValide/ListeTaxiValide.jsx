@@ -14,6 +14,34 @@ function Row({ row }) {
   const handleViewPdf = (fic) => {
     window.open(`${apiUrl}/files/${fic}`, '_blank');
   };
+  const handleDownload = async (row) => {
+    try {
+      const response = await fetch(apiUrl+ '/api/users/doc/' + row.USR_KEY, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      // Crée un objet Blob avec le contenu de la réponse
+      const blob = await response.blob();
+
+      // Crée un lien temporaire pour télécharger le blob
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', 'file.zip'); // Nomme le fichier téléchargé
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error('Failed to download file:', error);
+    }
+  };
   const handleClickValide = async (row) => {
     try {
       const response = await fetch(`${apiUrl}/api/users/valideuser`, {
@@ -119,6 +147,11 @@ function Row({ row }) {
           <TableCell>{row.mailcontact}</TableCell>
           <TableCell>{row.telephone}</TableCell>
           <TableCell>
+            <IconButton onClick={() => handleDownload(row)}>
+              <i class="ri-folder-download-fill"></i>
+            </IconButton>
+          </TableCell>
+          <TableCell>
             <IconButton onClick={() => handleClickValide(row)}>
                 <i className = "ri-check-line" color='green'></i>
             </IconButton>
@@ -140,19 +173,14 @@ function Row({ row }) {
                       <TableCell>Numéro du permis</TableCell>
                       <TableCell>Date de délivrance</TableCell>
                       <TableCell>Date d'expiration</TableCell>
-                      <TableCell>Scan du permis</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                       <TableRow key={row.id}>
-                        <TableCell>{row.permis.numPermis}</TableCell>
-                        <TableCell>{row.permis.dateDel}</TableCell>
-                        <TableCell>{row.permis.dateExpi}</TableCell>
-                        <TableCell>                                    
-                          <IconButton onClick={() => handleViewPdf(row.permis.ficPermis)}>
-                            <i className = "ri-eye-line" color='green'></i>
-                          </IconButton>
-                        </TableCell>
+                        <TableCell>{row.numPermis}</TableCell>
+                        <TableCell>{row.dateDel}</TableCell>
+                        <TableCell>{row.dateExpi}</TableCell>
+
                       </TableRow>
                   </TableBody>
                 </Table>
@@ -172,11 +200,11 @@ function Row({ row }) {
                   </TableHead>
                   <TableBody>
                       <TableRow key={row.id}>
-                        <TableCell>{row.vehicule.Marque}</TableCell>
-                        <TableCell>{row.vehicule.Modele}</TableCell>
-                        <TableCell>{row.vehicule.Annee}</TableCell>
-                        <TableCell>{row.vehicule.numImmatriculation}</TableCell>
-                        <TableCell>{row.vehicule.numSerie}</TableCell>
+                        <TableCell>{row.Marque}</TableCell>
+                        <TableCell>{row.Modele}</TableCell>
+                        <TableCell>{row.Annee}</TableCell>
+                        <TableCell>{row.numImmatriculation}</TableCell>
+                        <TableCell>{row.numSerie}</TableCell>
                         <TableCell>                                    
                           <IconButton onClick={() => handleViewPdf(row.vehicule.ficVehicule)}>
                             <i className = "ri-eye-line" color='green'></i>
@@ -229,6 +257,7 @@ function ListeTaxiValide(props) {
                     <TableCell>Code Postal</TableCell>
                     <TableCell>Contact</TableCell>
                     <TableCell>Téléphone</TableCell>
+                    <TableCell>Télécharger</TableCell>
                     <TableCell>Actions</TableCell>
                     </TableRow>
                 </TableHead>

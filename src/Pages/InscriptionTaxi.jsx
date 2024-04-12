@@ -10,6 +10,7 @@ import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { Snackbar, Alert } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js';
 
@@ -62,6 +63,8 @@ function InscriptionTaxi(props) {
     const [erreur, setErreur] = useState('');
     const stripe = useStripe();
     const elements = useElements();
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertInfo, setAlertInfo] = useState({ severity: 'info', message: '' });
     const handleChange = (e) => {
         const { name, value } = e.target;
         setDonneesInscription((prevState) => ({
@@ -145,7 +148,14 @@ function InscriptionTaxi(props) {
         setEtape(etape - 1);
     };
 
-
+    const handleAlertClose = () => {
+        setAlertOpen(false);
+    };
+    
+    const showAlert = (severity, message) => {
+        setAlertInfo({ severity, message });
+        setAlertOpen(true);
+    };
 
     const envoyerInscription = async () => {
         if (!stripe || !elements) {
@@ -230,14 +240,15 @@ function InscriptionTaxi(props) {
         if (!response.ok) throw new Error('Réponse du réseau non OK');
 
         const responseData = await response.json();
-        console.log('Réponse de l\'API:', responseData);
-        // Gère la réponse ici
-    } catch (error) {
-        console.error('Erreur lors de l\'envoi des données:', error);
+        showAlert('success', 'Votre compte a correctement été crée il passe maintenant en statut en attente de validation. Vous allez être redirigé vers la page de connexion. ');
+    } 
+    catch (error) {
+        if (error.message.includes('Stripe')) {
+            showAlert('error', 'Erreur de paiement Stripe.');
+        } else {
+            showAlert('error', 'Erreur lors de la communication avec la base de données.');
+        }
     }
-    console.log('formData:', formData);
-
-        // Ici, tu pourrais utiliser fetch ou axios pour envoyer `donneesInscription` à ton API
     };
 
 
@@ -287,7 +298,12 @@ function InscriptionTaxi(props) {
             ) : (
             <button onClick={envoyerInscription}>Envoyer Inscription</button>
             )}
-      </Box>
+            <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleAlertClose}>
+                <Alert onClose={handleAlertClose} severity={alertInfo.severity} sx={{ width: '100%' }}>
+                    {alertInfo.message}
+                </Alert>
+            </Snackbar>
+        </Box>
     );
 }
 
