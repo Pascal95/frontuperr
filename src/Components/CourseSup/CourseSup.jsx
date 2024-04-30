@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import "./CourseSup.css";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import HourglassTopIcon from '@mui/icons-material/HourglassTop';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import moment from 'moment';
 import 'moment/locale/fr';
 
@@ -13,6 +16,20 @@ function CourseSup(props) {
     const [taxis, setTaxis] = useState([]);
     const token = localStorage.getItem('token');
     const apiUrl = import.meta.env.VITE_API_URL;
+
+    const renderStatusIcon = (etat) => {
+        switch (etat) {
+          case 2:
+            return <HourglassTopIcon style={{ color: 'ff9500' }} />;
+          case 3:
+            return <DoneOutlineIcon style={{ color: '#08e300' }} />;
+          case 4:
+            return <PriorityHighIcon style={{ color: '#ff0000' }} />;
+          default:
+            return null; // ou un autre icône par défaut si nécessaire
+        }
+      };
+    
 
     useEffect(() => {
         const fetchReservations = async () => {
@@ -131,58 +148,60 @@ function CourseSup(props) {
         <div className="CourseSup">
             <h2 className='CourseSup__title'>CourseSup</h2>
             <TableContainer component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>ID Course</TableCell>
-                        <TableCell>Adresse de Départ</TableCell>
-                        <TableCell>Adresse d'Arrivée</TableCell>
-                        <TableCell>Taxi</TableCell>
-                        <TableCell>Heure de Départ</TableCell>
-                        
-                        <TableCell>Aller/Retour</TableCell>
-                        <TableCell>Actions</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {reservations.map(reservation => (
-                        <TableRow key={reservation.idReservation}>
-                            <TableCell>{reservation.idReservation}</TableCell>
-                            <TableCell>{reservation.AdresseDepart}</TableCell>
-                            <TableCell>{reservation.AdresseArrive}</TableCell>
-                            <TableCell>{reservation.TaxiNom} {reservation.TaxiPrenom}</TableCell>
-                            <TableCell>{formatDate(reservation.HeureDepart)}</TableCell>
-                            <TableCell>{reservation.AllerRetour ? 'Oui' : 'Non'}</TableCell>
-                            <TableCell>
-                                <IconButton >
-                                    <EditIcon onClick={() => handleEditClick(reservation)} />
-                                </IconButton>
-                            </TableCell>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>ID Course</TableCell>
+                            <TableCell>Adresse de Départ</TableCell>
+                            <TableCell>Adresse d'Arrivée</TableCell>
+                            <TableCell>Taxi</TableCell>
+                            <TableCell>Heure de Départ</TableCell>
                             
+                            <TableCell>Aller/Retour</TableCell>
+                            <TableCell>Actions</TableCell>
+                            <TableCell>État</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                        {reservations.map(reservation => (
+                            <TableRow key={reservation.idReservation}>
+                                <TableCell>{reservation.idReservation}</TableCell>
+                                <TableCell>{reservation.AdresseDepart}</TableCell>
+                                <TableCell>{reservation.AdresseArrive}</TableCell>
+                                <TableCell>{reservation.TaxiNom} {reservation.TaxiPrenom}</TableCell>
+                                <TableCell>{formatDate(reservation.HeureDepart)}</TableCell>
+                                <TableCell>{reservation.AllerRetour ? 'Oui' : 'Non'}</TableCell>
+                                <TableCell>
+                                    <IconButton >
+                                        <EditIcon onClick={() => handleEditClick(reservation)} />
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell>{renderStatusIcon(reservation.Etat)}</TableCell>
+                                
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         <Dialog open={openDialog} onClose={handleCloseDialog}>
             <DialogTitle>Modifier la réservation</DialogTitle>
             <DialogContent>
                 {/* Les champs existants */}
                 <FormControl fullWidth margin="dense">
-                <InputLabel id="select-taxi-label">Taxi</InputLabel>
-<Select
-    labelId="select-taxi-label"
-    id="select-taxi"
-    value={editReservation?.idTaxi || ''}
-    label="Taxi"
-    onChange={(e) => setEditReservation({ ...editReservation, idTaxi: e.target.value })}
->
-    {Array.isArray(taxis) && taxis.map((taxi) => (
-        <MenuItem key={taxi.idFiche} value={taxi.idFiche}>
-            {taxi.nom} {taxi.prenom}
-        </MenuItem>
-    ))}
-</Select>
+                    <InputLabel id="select-taxi-label">Taxi</InputLabel>
+                    <Select
+                        labelId="select-taxi-label"
+                        id="select-taxi"
+                        value={editReservation?.idTaxi || ''}
+                        label="Taxi"
+                        onChange={(e) => setEditReservation({ ...editReservation, idTaxi: e.target.value })}
+                    >
+                        {Array.isArray(taxis) && taxis.map((taxi) => (
+                            <MenuItem key={taxi.idFiche} value={taxi.idFiche}>
+                                {taxi.nom} {taxi.prenom}
+                            </MenuItem>
+                        ))}
+                    </Select>
                 </FormControl>
             </DialogContent>
             <DialogActions>

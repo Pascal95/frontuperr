@@ -4,6 +4,25 @@ import { Box } from '@mui/system';
 import { TextField, Button, CircularProgress, Snackbar, Alert, Switch, FormControlLabel, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useJsApiLoader, GoogleMap, Marker, DirectionsRenderer, Autocomplete } from '@react-google-maps/api';
 import moment from 'moment';
+import 'dayjs/locale/fr'; // Importer la locale française
+import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+  components: {
+    MuiSvgIcon: { // Cible toutes les icônes SVG dans le thème
+      styleOverrides: {
+        root: {
+          color: 'red', // Définissez la couleur désirée ici
+        }
+      }
+    }
+  }
+});
+dayjs.locale('fr'); 
+
 
 function DashboardInit(props) {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -13,7 +32,7 @@ function DashboardInit(props) {
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
         libraries: ['places']
     });
-
+    const [value, setValue] = React.useState(dayjs());
     const [formData, setFormData] = useState({
         idFicheUser: '',
         AdresseDepart: '',
@@ -21,6 +40,7 @@ function DashboardInit(props) {
         HeureConsult: '',
         AllerRetour: false,
         DureeConsult: '',
+        pecPMR: 0
     });
     const [directionsResponse, setDirectionsResponse] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -28,6 +48,18 @@ function DashboardInit(props) {
 
     const originRef = useRef();
     const destinationRef = useRef();
+    const medicalAppointments = [
+        { name: "Dialyse", duration: "04:00:00" },
+        { name: "Chimiothérapie", duration: "01:00:00" },
+        { name: "Consultation spécialisée", duration: "01:00:00" },
+        { name: "Radiologie/Imagerie", duration: "01:00:00" },
+        { name: "Thérapie physique", duration: "01:00:00" },
+        { name: "Consultation pré/post-opératoire", duration: "01:00:00" },
+        { name: "Suivi de grossesse", duration: "00:30:00" },
+        { name: "Soins de longue durée", duration: "01:00:00" },
+        { name: "Traitements ophtalmologiques", duration: "01:00:00" },
+        { name: "Psychothérapie", duration: "01:00:00" }
+      ];
 
     useEffect(() => {
         if (formData.AdresseDepart && formData.AdresseArrive) {
@@ -54,8 +86,20 @@ function DashboardInit(props) {
     }, [isLoaded]);
 
 
-    const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleInputChange = (event) => {
+        const { name, value } = event.target || { name: event.name, value: event };
+    
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleDateChange = (newValue) => {
+        setFormData(prevState => ({
+            ...prevState,
+            HeureConsult: newValue
+        }));
     };
 
     const handleSwitchChange = (event) => {
@@ -200,6 +244,7 @@ function DashboardInit(props) {
         <div className="DashboardInit">
             <h2 className="dashboard__title">Réserver un taxi</h2>
             <form onSubmit={handleSubmit}>
+
                 <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Patient</InputLabel>
                     <Select
@@ -245,24 +290,48 @@ function DashboardInit(props) {
                     inputRef={destinationRef}
                 />
             </Autocomplete>
-                <TextField
-                    type="datetime-local"
-                    label="Heure de consultation"
-                    name="HeureConsult"
-                    value={formData.HeureConsult}
+            
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
+            <DateTimePicker
+                label="Date heure de consultation"
+                value={formData.HeureConsult}
+                onChange={handleDateChange}  // Utilisation de handleDateChange au lieu de handleInputChange
+                renderInput={(params) => <TextField {...params} />}
+                ampm={false}
+                inputFormat="DD/MM/YYYY HH:mm"
+                fullWidth
+                margin="normal"
+            />
+            </LocalizationProvider>
+                <FormControl fullWidth margin="normal">
+                    <InputLabel id="demo-simple-select-label">Type de consultation</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        name="DureeConsult"
+                        value={formData.DureeConsult}
+                        label="Type de consultation"
+                        onChange={handleInputChange}
+                    >
+                        {medicalAppointments.map((appointment) => (
+                            <MenuItem value={appointment.duration}>{appointment.name}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+                <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Prise en charge PMR</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    name="pecPMR"
+                    value={formData.pecPMR}
+                    label="Prise en charge PMR"
                     onChange={handleInputChange}
-                    fullWidth
-                    margin="normal"
-                />
-                <TextField
-                    type="time"
-                    label="Durée de la consultation"
-                    name="DureeConsult"
-                    value={formData.DureeConsult}
-                    onChange={handleInputChange}
-                    fullWidth
-                    margin="normal"
-                />
+                >
+                    <MenuItem value={0} defaultValue>Non</MenuItem>
+                    <MenuItem value={1}>Oui</MenuItem>
+                </Select>
+                </FormControl>
                 <FormControlLabel
                     control={
                         <Switch

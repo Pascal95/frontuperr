@@ -195,7 +195,7 @@ function Row({ row }) {
                       <TableCell>Année</TableCell>
                       <TableCell>Numéro d'immatriculation</TableCell>
                       <TableCell>Numéro de série</TableCell>
-                      <TableCell>Carte grise du véhicule</TableCell>
+                      <TableCell>Prise en charge PMR</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -205,11 +205,7 @@ function Row({ row }) {
                         <TableCell>{row.Annee}</TableCell>
                         <TableCell>{row.numImmatriculation}</TableCell>
                         <TableCell>{row.numSerie}</TableCell>
-                        <TableCell>                                    
-                          <IconButton onClick={() => handleViewPdf(row.vehicule.ficVehicule)}>
-                            <i className = "ri-eye-line" color='green'></i>
-                          </IconButton>
-                        </TableCell>
+                        <TableCell>{row.pecPMR}</TableCell>
                       </TableRow>
                   </TableBody>
                 </Table>

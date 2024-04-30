@@ -18,6 +18,7 @@ import EnvoiMessage from "../Components/EnvoiMessage/EnvoiMessage";
 import CourseSup from "../Components/CourseSup/CourseSup";
 import InscriptionComplet from "../Components/InscriptionComplet/InscriptionComplet";
 import InscriptionTaxi from "../Pages/InscriptionTaxi";
+import CreerUtilisateur from "../Components/CreerUtilisateur/CreerUtilisateur";
 
 
 const Router = () => {
@@ -45,6 +46,7 @@ const Router = () => {
           <Route path="NewMessages" element={<EnvoiMessage />} />
           <Route path="CourseSup" element={<CourseSup />} />
           <Route path="InscriptionComplet" element={<InscriptionComplet />} />
+          <Route path="CreerUtilisateur" element={<CreerUtilisateur />} />
         </Route>
         <Route path="/Inscription" element={<Inscription />} />
         <Route path="/InscriptionEtape/:info" element={<InscriptionEtape/>} />

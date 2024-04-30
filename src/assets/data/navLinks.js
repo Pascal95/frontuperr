@@ -30,6 +30,12 @@ const navLinks = [
     roles:[1]
   },
   {
+    path: "/Dashboard/CreerUtilisateur",
+    icon: "ri-shopping-bag-line",
+    display: "Créer un utilisateur",
+    roles:[1]
+  },
+  {
     path: "/Dashboard/BonTransport",
     icon: "ri-shopping-bag-line",
     display: "Ajouter un bon de transport",

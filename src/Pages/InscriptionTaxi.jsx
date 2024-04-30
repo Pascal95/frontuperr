@@ -10,8 +10,13 @@ import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import { Snackbar, Alert } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import SendIcon from '@mui/icons-material/Send';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js';
 
 
@@ -40,6 +45,7 @@ function InscriptionTaxi(props) {
             couleurvehicule: '',
             pecPMR: '',
             immatriculation: '',
+            numSerie: '',
             controletechnique: null,
         },
         etape4: {
@@ -209,6 +215,7 @@ function InscriptionTaxi(props) {
         formData.append('etape3[couleurvehicule]', donneesInscription.etape3.couleurvehicule);
         formData.append('etape3[pecPMR]', donneesInscription.etape3.pecPMR);
         formData.append('etape3[immatriculation]', donneesInscription.etape3.immatriculation);
+        formData.append('etape3[numSerie]', donneesInscription.etape3.numSerie);
         if (donneesInscription.etape3.controletechnique instanceof File) {
             formData.append('controletechnique', donneesInscription.etape3.controletechnique);
         }
@@ -290,14 +297,22 @@ function InscriptionTaxi(props) {
         }}>
             {renderEtape()}
             <p style={{ color: 'red' }}>{erreur}</p>
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', mt: 2 }}>
             {etape > 1 && (
-            <button onClick={etapePrecedente}>Étape Précédente</button>
+                <Button variant="outlined" startIcon={<ArrowBackIcon />} onClick={etapePrecedente}>
+                    Étape Précédente
+              </Button>
             )}
             {etape < 6 ? (
-            <button onClick={etapeSuivante}>Étape Suivante</button>
+                <Button variant="contained" color="success" onClick={etapeSuivante} endIcon={<ArrowForwardIcon />}>
+                    Étape Suivante
+              </Button>
             ) : (
-            <button onClick={envoyerInscription}>Envoyer Inscription</button>
+                <Button variant="contained" color="success" onClick={envoyerInscription} endIcon={<SendIcon />}>
+                    S'inscrire
+          </Button>
             )}
+            </Box>
             <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleAlertClose}>
                 <Alert onClose={handleAlertClose} severity={alertInfo.severity} sx={{ width: '100%' }}>
                     {alertInfo.message}
@@ -377,6 +392,15 @@ function Etape1({ donneesInscription, majDonnees }) {
                     />
                 </FormControl>
             </Box>
+            <small>Le mot de passe doit contenir au moins : <br/>
+            <ul>
+                <li>8 caractères</li>
+                <li>1 majuscule</li>
+                <li>1 minuscule</li>
+                <li>1 chiffre</li>
+                <li>1 caractère spécial (!@#$%^&*(),.?":{}|<>)</></li>
+            </ul>
+            </small>
             {/* Ajoute d'autres champs au besoin */}
         </div>
     );
@@ -507,15 +531,32 @@ function Etape3({ donneesInscription, majDonnees, handleFileChange }) {
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                 <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
-                    <InputLabel >Prise en charge PMR</InputLabel>
+                    <InputLabel >Numéro de série</InputLabel>
                     <Input
                         id="standard"
-                        name='pecPMR'
-                        value={donneesInscription.etape3.pecPMR}
+                        name='numSerie'
+                        value={donneesInscription.etape3.numSerie}
                         onChange={majDonnees}
                     />
                 </FormControl>
             </Box>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+            <FormControl fullWidth sx={{ m: 1, width: '25ch' }} variant="standard">
+                <InputLabel id="pecPMR-label">Prise en charge PMR</InputLabel>
+                <Select
+                    labelId="pecPMR-label"
+                    id="pecPMR-select"
+                    name='pecPMR'
+                    value={donneesInscription.etape3.pecPMR}
+                    onChange={majDonnees}
+                    label="Prise en charge PMR"
+                >
+                    <MenuItem value="Oui">Oui</MenuItem>
+                    <MenuItem value="Non">Non</MenuItem>
+                </Select>
+            </FormControl>
+        </Box>
+
             <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                 <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
                     <InputLabel >Immatriculation du véhicule</InputLabel>
@@ -545,8 +586,8 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
     // Similaire à Etape1, Etape2 et Etape3, adapte les champs nécessaires
     return (
         <div>
-            Étape 4: Document
-            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+            Étape 4: Téléchargez vos document
+            <Box sx={{ display: 'flex', alignItems: 'flex-end', marginTop: '16px' }}>
                 <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
                     KBIS
                     <input 
@@ -557,7 +598,7 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
                         onChange={handleFileChange} />
                 </Button>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end', marginTop: '16px' }}>
                 <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
                     Attestation d'assurance
                     <input 
@@ -568,7 +609,7 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
                     onChange={handleFileChange} />
                 </Button>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end', marginTop: '16px' }}>
                 <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
                 Autorisation de stationnement ou arreté municipale
                     <input 
@@ -579,7 +620,7 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
                     onChange={handleFileChange} />
                 </Button>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end', marginTop: '16px' }}>
                 <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
                 Attestation de stage continue
                     <input 
@@ -590,7 +631,7 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
                     onChange={handleFileChange} />
                 </Button>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end', marginTop: '16px' }}>
                 <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
                 Attestation médicale
                     <input 
@@ -601,7 +642,7 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
                     onChange={handleFileChange} />
                 </Button>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end', marginTop: '16px' }}>
                 <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
                 Carte professionnelle
                     <input 
@@ -612,7 +653,7 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
                     onChange={handleFileChange} />
                 </Button>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end', marginTop: '16px' }}>
                 <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
                 Permis de conduire
                     <input 

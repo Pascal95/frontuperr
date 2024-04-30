@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import navLinks from "../../assets/data/navLinks";
 import { NavLink } from "react-router-dom";
 import "./sidebar.css";
-import logo from "../../assets/img/Logo_UPERMED.png"
+import logo from "../../assets/img/LogoHeygoMed.png"
 
 function Sidebar(props) {
   const token = localStorage.getItem('token');
@@ -69,7 +69,7 @@ function Sidebar(props) {
 
         <h2>
           <img src={logo} className="logoSidebar" />
-          UperMed
+          HeygoMed
         </h2>
       </div>
 
