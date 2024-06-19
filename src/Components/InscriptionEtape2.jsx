@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Grid, InputLabel, MenuItem, FormControl, Select, TextField, Typography, Button } from '@mui/material';
 import { Box } from '@mui/system';
 import SendIcon from '@mui/icons-material/Send';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 function InscriptionEtape2(props) {
     const [erreurs, setErreurs] = useState([]);
@@ -30,23 +30,32 @@ function InscriptionEtape2(props) {
     };
 
     return (
-            <Box sx={{ p: 5, bgcolor: 'background.paper', borderRadius: 2 }}>
-                <Typography variant="h4" gutterBottom align="center">
-                    Information de l'utilisateur
-                </Typography>
-                <form autoComplete="off">
-                    <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <TextField 
-                            name="nom" 
-                            label="Nom"   
-                            fullWidth  
-                            margin="normal"
-                            onChange={props.onInputChange}
-                            value={props.data.nom}  
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
+        <Box sx={{
+            backgroundColor: "#F5F5F5",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            maxWidth: '400px', 
+            margin: 'auto',
+            padding: '20px',
+            borderRadius: '7px',
+            marginTop: '10%'
+        }}>
+            <Typography variant="h4" gutterBottom align="center">
+                Information de l'utilisateur
+            </Typography>
+            <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
+                <TextField 
+                    name="nom" 
+                    label="Nom"   
+                    fullWidth  
+                    margin="normal"
+                    onChange={props.onInputChange}
+                    value={props.data.nom}  
+                />
+            </FormControl>
+                    <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
                         <TextField 
                             name="prenom" 
                             label="Prenom"  
@@ -55,8 +64,8 @@ function InscriptionEtape2(props) {
                             onChange={props.onInputChange}
                             value={props.data.prenom} 
                         />
-                    </Grid>
-                    <Grid item xs={12}>
+                    </FormControl>
+                    <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
                         <TextField 
                             name="adresse" 
                             label="Adresse"  
@@ -65,8 +74,8 @@ function InscriptionEtape2(props) {
                             onChange={props.onInputChange}
                             value={props.data.adresse} 
                         />
-                    </Grid>
-                    <Grid item xs={12}>
+                    </FormControl>
+                    <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
                         <TextField 
                             name="ville" 
                             label="Ville"  
@@ -75,8 +84,8 @@ function InscriptionEtape2(props) {
                             onChange={props.onInputChange}
                             value={props.data.ville} 
                         />
-                    </Grid>
-                    <Grid item xs={12}>
+                    </FormControl>
+                    <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
                         <TextField 
                             name="codepostal" 
                             label="Code postal"  
@@ -85,8 +94,8 @@ function InscriptionEtape2(props) {
                             onChange={props.onInputChange}
                             value={props.data.codepostal}  
                         />
-                    </Grid>
-                    <Grid item xs={12}>
+                    </FormControl>
+                    <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
                         <TextField 
                             name="mailcontact" 
                             label="Mail de contact"  
@@ -96,8 +105,8 @@ function InscriptionEtape2(props) {
                             onChange={props.onInputChange}
                             value={props.data.mailcontact}  
                         />
-                    </Grid>
-                    <Grid item xs={12}>
+                    </FormControl>
+                    <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
                         <TextField 
                             name="telephone" 
                             label="Telephone"  
@@ -106,24 +115,18 @@ function InscriptionEtape2(props) {
                             onChange={props.onInputChange}
                             value={props.data.telephone} 
                         />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FormControl fullWidth >
-                            <InputLabel id="demo-simple-select-label">Role</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                name="role"
-                                value={props.data.role}
-                                label="Role"
-                                onChange={props.onInputChange}
-                            >
-                                <MenuItem value={3}>Taxi</MenuItem>
-                                <MenuItem value={4}>Medecin</MenuItem>
-                                <MenuItem value={5}>Utilisateur</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
+                    </FormControl>
+                    <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
+                        <TextField 
+                            name="numSS" 
+                            label="Numéro de sécurité sociale"  
+                            fullWidth  
+                            margin="normal"
+                            onChange={props.onInputChange}
+                            value={props.data.numSS} 
+                        />
+                    </FormControl>
+
                     {erreurs.length > 0 && (
                         <Grid item xs={12}>
                             <Box sx={{ color: 'error.main' }}>
@@ -134,14 +137,16 @@ function InscriptionEtape2(props) {
                         </Grid>
                     )}
                     <Grid item xs={12} container justifyContent="center">
-                        <Button variant="contained" onClick={validerFormulaire} endIcon={<SendIcon />}>
+                        <Button 
+                            variant="contained" 
+                            onClick={validerFormulaire} 
+                            endIcon={<SendIcon />} 
+                            sx={{ mt: 2 }}
+                        >
                             Suivant
                         </Button>
                     </Grid>
-                </Grid>
-                </form>
         </Box>
-        
     );
 }
 

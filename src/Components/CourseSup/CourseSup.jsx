@@ -28,7 +28,7 @@ function CourseSup(props) {
           default:
             return null; // ou un autre icône par défaut si nécessaire
         }
-      };
+    };
     
 
     useEffect(() => {

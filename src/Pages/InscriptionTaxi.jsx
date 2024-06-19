@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import FormControl from '@mui/material/FormControl';
 import { Box } from '@mui/system';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -12,7 +12,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { Snackbar, Alert } from '@mui/material';
+import { Snackbar, Alert, CircularProgress } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import SendIcon from '@mui/icons-material/Send';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -24,6 +24,13 @@ function InscriptionTaxi(props) {
     const [etape, setEtape] = useState(1);
     const { key } = useParams();
     const apiUrl = import.meta.env.VITE_API_URL;
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [hasFiche, setHasFiche] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [productInfo, setProductInfo] = useState(null); // Nouvel état pour les informations du produit
+    const [priceInfo, setPriceInfo] = useState(null); // Nouvel état pour les informations du prix
+
     const [donneesInscription, setDonneesInscription] = useState({
         key: key,
         etape1: {
@@ -71,6 +78,14 @@ function InscriptionTaxi(props) {
     const elements = useElements();
     const [alertOpen, setAlertOpen] = useState(false);
     const [alertInfo, setAlertInfo] = useState({ severity: 'info', message: '' });
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const hasFicheParam = queryParams.get('hasFiche');
+        console.log('hasFicheParam:', hasFicheParam);
+        setHasFiche(hasFicheParam === 'true');
+      }, [location.search]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setDonneesInscription((prevState) => ({
@@ -129,17 +144,28 @@ function InscriptionTaxi(props) {
                 return; // Empêche d'aller à l'étape suivante
             }
         }
-
+    
         if (verifierChampsRemplis()) {
             // Si tous les champs sont remplis, passe à l'étape suivante
-            setEtape(etape + 1);
+            if (hasFiche) {
+                if (etape < 5) {
+                    setEtape(etape + 1);
+                } else {
+                    envoyerInscription(); // Envoyer l'inscription si on est à la dernière étape pour hasFiche = true
+                }
+            } else {
+                if (etape < 6) {
+                    setEtape(etape + 1);
+                } else {
+                    envoyerInscription(); // Envoyer l'inscription si on est à la dernière étape pour hasFiche = false
+                }
+            }
         } else {
             // Sinon, affiche un message d'erreur ou gère le cas des champs non remplis comme tu le souhaites
             alert("Veuillez remplir tous les champs avant de continuer.");
             return; // Empêche d'aller à l'étape suivante
         }
         setErreur(''); // Réinitialise l'erreur si tout va bien
-        setEtape(etape + 1);
     };
 
     const validatePassword = (password) => {
@@ -171,21 +197,26 @@ function InscriptionTaxi(props) {
     
         const cardElement = elements.getElement(CardNumberElement);
     
-        if (!cardElement) {
-            console.log("Élément de carte non trouvé");
-            return;
-        }
+
+        if (!hasFiche) {
+            if (!cardElement) {
+                console.log("Élément de carte non trouvé");
+                return;
+            }
+            const { error, paymentMethod } = await stripe.createPaymentMethod({
+                type: 'card',
+                card: cardElement,
+            });
+            console.log('paymentMethod:', paymentMethod);
     
-        const {error, paymentMethod} = await stripe.createPaymentMethod({
-            type: 'card',
-            card: cardElement,
-        });
-    
-        if (error) {
-            console.log('[error]', error);
-            return;
+            if (error) {
+                console.log('[error]', error);
+                return;
+            }
+            donneesInscription.etape6.paymentMethodId = paymentMethod.id;
         }
-        
+
+        setIsLoading(true); // Commence le chargement
         // Attends une mise à jour de l'état
         await new Promise(resolve => setTimeout(resolve, 0));
 
@@ -226,37 +257,77 @@ function InscriptionTaxi(props) {
             }
         });
 
-    // Ajout des champs de l'étape 5
-    formData.append('etape5[numPermis]', donneesInscription.etape5.numPermis);
-    formData.append('etape5[dateDel]', donneesInscription.etape5.dateDel);
-    formData.append('etape5[dateExpi]', donneesInscription.etape5.dateExpi);
+        // Ajout des champs de l'étape 5
+        formData.append('etape5[numPermis]', donneesInscription.etape5.numPermis);
+        formData.append('etape5[dateDel]', donneesInscription.etape5.dateDel);
+        formData.append('etape5[dateExpi]', donneesInscription.etape5.dateExpi);
 
-    // Ajout des champs de l'étape 6
-    formData.append('etape6[paymentMethodId]', paymentMethod.id);
-
-    // Ajoute les fichiers
-
-
-
-    try {
-        const response = await fetch(`${apiUrl}/api/users/completetaxi`, {
-            method: 'POST',
-            body: formData, // Pas besoin de spécifier 'Content-Type', FormData le fait automatiquement
-        });
-
-        if (!response.ok) throw new Error('Réponse du réseau non OK');
-
-        const responseData = await response.json();
-        showAlert('success', 'Votre compte a correctement été crée il passe maintenant en statut en attente de validation. Vous allez être redirigé vers la page de connexion. ');
-    } 
-    catch (error) {
-        if (error.message.includes('Stripe')) {
-            showAlert('error', 'Erreur de paiement Stripe.');
-        } else {
-            showAlert('error', 'Erreur lors de la communication avec la base de données.');
+        // Ajout des champs de l'étape 6
+        if (!hasFiche) {
+            formData.append('etape6[paymentMethodId]', donneesInscription.etape6.paymentMethodId);
         }
-    }
+
+        // Ajoute les fichiers
+
+
+
+        try {
+            const response = await fetch(`${apiUrl}/api/users/completetaxi`, {
+                method: 'POST',
+                body: formData, // Pas besoin de spécifier 'Content-Type', FormData le fait automatiquement
+            });
+
+            if (!response.ok) throw new Error('Réponse du réseau non OK');
+
+            const responseData = await response.json();
+            showAlert('success', 'Votre compte a correctement été crée il passe maintenant en statut en attente de validation. Vous allez être redirigé vers la page de connexion. ');
+            navigate('/');  // Redirige vers la page d'accueil
+        } 
+        catch (error) {
+            if (error.message.includes('Stripe')) {
+                showAlert('error', 'Erreur de paiement Stripe.');
+            } else {
+                showAlert('error', 'Erreur lors de la communication avec la base de données.');
+            }
+        } finally {
+            setIsLoading(false); // Arrête le chargement
+        }
     };
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const hasFicheParam = queryParams.get('hasFiche');
+        console.log('hasFicheParam:', hasFicheParam);
+        setHasFiche(hasFicheParam === 'true');
+    
+        // Appel à l'API pour récupérer les informations du produit
+        const fetchProductInfo = async () => {
+            try {
+                setIsLoading(true);
+                const response = await fetch(`${apiUrl}/api/inscription/complete/${key}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des informations du produit');
+                }
+    
+                const data = await response.json();
+                setProductInfo(data.product);
+                setPriceInfo(data.price.data[0]); // Assuming you want the first price
+            } catch (error) {
+                console.error('Erreur:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        if (!hasFicheParam) {
+            fetchProductInfo();
+        }
+    }, [location.search, apiUrl, key]);
 
 
     const renderEtape = () => {
@@ -269,14 +340,15 @@ function InscriptionTaxi(props) {
             return <Etape3 donneesInscription={donneesInscription} majDonnees={handleChange} handleFileChange={handleFileChange} />;
         case 4:
             return <Etape4 donneesInscription={donneesInscription} majDonnees={handleChange} handleFileChange={handleFileChange} />;
-        case 5:
+       case 5:
             return <Etape5 donneesInscription={donneesInscription} majDonnees={handleChange} handleFileChange={handleFileChange} />;
         case 6:
-            return (
+            if (hasFiche) {
+                return null;
+            } else {
+                return <Etape6 donneesInscription={donneesInscription} majDonnees={handleChange} productInfo={productInfo} priceInfo={priceInfo} />;
                 
-                    <Etape6 />
-                
-            );
+            }
         default:
             return <Etape1 majDonnees={handleChange} handleFileChange={handleFileChange} />;
         }
@@ -298,20 +370,26 @@ function InscriptionTaxi(props) {
             {renderEtape()}
             <p style={{ color: 'red' }}>{erreur}</p>
             <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-            {etape > 1 && (
-                <Button variant="outlined" startIcon={<ArrowBackIcon />} onClick={etapePrecedente}>
-                    Étape Précédente
-              </Button>
-            )}
-            {etape < 6 ? (
-                <Button variant="contained" color="success" onClick={etapeSuivante} endIcon={<ArrowForwardIcon />}>
-                    Étape Suivante
-              </Button>
-            ) : (
-                <Button variant="contained" color="success" onClick={envoyerInscription} endIcon={<SendIcon />}>
-                    S'inscrire
-          </Button>
-            )}
+                {etape > 1 && (
+                    <Button variant="outlined" startIcon={<ArrowBackIcon />} onClick={etapePrecedente}>
+                        Étape Précédente
+                    </Button>
+                )}
+                {(etape < 5 || (!hasFiche && etape < 6)) ? (
+                    <Button variant="contained" color="success" onClick={etapeSuivante} endIcon={<ArrowForwardIcon />}>
+                        Étape Suivante
+                    </Button>
+                ) : (
+                    <Button
+                        variant="contained"
+                        color="success"
+                        onClick={envoyerInscription}
+                        endIcon={isLoading ? <CircularProgress size={24} /> : <SendIcon />}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Envoi en cours...' : "S'inscrire"}
+                    </Button>
+                )}
             </Box>
             <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleAlertClose}>
                 <Alert onClose={handleAlertClose} severity={alertInfo.severity} sx={{ width: '100%' }}>
@@ -513,6 +591,7 @@ function Etape3({ donneesInscription, majDonnees, handleFileChange }) {
                     <Input
                         id="standard"
                         name='annee'
+                        type="number"
                         value={donneesInscription.etape3.annee}
                         onChange={majDonnees}
                     />
@@ -722,24 +801,23 @@ function Etape5 ({ donneesInscription, majDonnees }) {
 }
 
 
-function Etape6({ donneesInscription, majDonnees }) {
-
+function Etape6({ donneesInscription, majDonnees, productInfo, priceInfo }) {
     const CARD_ELEMENT_OPTIONS = {
         style: {
-          base: {
-            color: "#000000",
-            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-            fontSmoothing: "antialiased",
-            fontSize: "16px",
-            "::placeholder": {
-              color: "#aab7c4"
+            base: {
+                color: "#000000",
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: "antialiased",
+                fontSize: "16px",
+                "::placeholder": {
+                    color: "#aab7c4"
+                },
+                padding: '10px 12px', // Ajoute un padding pour éviter que les éléments soient collés
             },
-            padding: '10px 12px', // Ajoute un padding pour éviter que les éléments soient collés
-          },
-          invalid: {
-            color: "#fa755a",
-            iconColor: "#fa755a"
-          }
+            invalid: {
+                color: "#fa755a",
+                iconColor: "#fa755a"
+            }
         }
     };
 
@@ -747,18 +825,26 @@ function Etape6({ donneesInscription, majDonnees }) {
         <div>
             Étape 6: Paiement
             <Box>
-            <label style={{ color: '#000', display: 'block', marginBottom: '10px' }}>
-                Numéro de carte
-                <CardNumberElement options={CARD_ELEMENT_OPTIONS} />
-            </label>
-            <label style={{ color: '#000', display: 'block', marginBottom: '10px' }}>
-                Date d'expiration
-                <CardExpiryElement options={CARD_ELEMENT_OPTIONS} />
-            </label>
-            <label style={{ color: '#000', display: 'block', marginBottom: '10px' }}>
-                CVC
-                <CardCvcElement options={CARD_ELEMENT_OPTIONS} />
-            </label>
+                {productInfo && priceInfo && (
+                    <div>
+                        <h3>{productInfo.name}</h3>
+                        <p>{productInfo.description}</p>
+                        <p>Prix: {(priceInfo.unit_amount / 100).toFixed(2)} {priceInfo.currency.toUpperCase()}</p>
+                    </div>
+                )}
+                <label style={{ color: '#000', display: 'block', marginBottom: '10px' }}>
+                    Numéro de carte
+                    <CardNumberElement options={CARD_ELEMENT_OPTIONS} />
+                </label>
+                <label style={{ color: '#000', display: 'block', marginBottom: '10px' }}>
+                    Date d'expiration
+                    <CardExpiryElement options={CARD_ELEMENT_OPTIONS} />
+                </label>
+                <label style={{ color: '#000', display: 'block', marginBottom: '10px' }}>
+                    CVC
+                    <CardCvcElement options={CARD_ELEMENT_OPTIONS} />
+                </label>
             </Box>
-        </div>);
+        </div>
+    );
 }

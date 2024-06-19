@@ -1,12 +1,13 @@
 import React ,{useState} from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import InscriptionEtape2 from '../Components/InscriptionEtape2';
 import InscriptionTaxiPermis from '../Components/InscriptionTaxiPermis';
 import InscriptionTaxiVehicule from '../Components/InscriptionTaxiVehicule';
 import exampleImage from '../image/taxi.jpg';
 import SendIcon from '@mui/icons-material/Send';
 
-import { Box, Grid, Typography, Button } from '@mui/material';
+
+import { Box, Grid, Typography, Button, CircularProgress } from '@mui/material';
 import VoitureMickael from '../assets/img/mercedes.jpeg';
 
 
@@ -20,6 +21,7 @@ function InscriptionEtape(props) {
     const apiUrl = import.meta.env.VITE_API_URL;
     const [nomFichierPermis, setNomFichierPermis] = useState('');
     const [nomFichierVehicule, setNomFichierVehicule] = useState('');
+    const navigate = useNavigate();
     const [formFiche, setformFiche] =useState({
         nom: '',
         prenom: '',
@@ -28,7 +30,7 @@ function InscriptionEtape(props) {
         codepostal: '',
         mailcontact: '',
         telephone: '',
-        role:'',
+        role:5,
         idCNX:idUSR,
         signature:'',
         idFicheMere:0,
@@ -98,6 +100,8 @@ function InscriptionEtape(props) {
                     idFiche: data.ficheId
                 }));
             }
+            // Rediriger vers la page d'accueil après une soumission réussie
+            navigate('/');
 
             
             // Logique pour passer à l'étape suivante ou terminer le processus d'inscription

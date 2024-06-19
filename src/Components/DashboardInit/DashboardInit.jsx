@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './DashboardInit.css'
+import './DashboardInit.css';
 import { Box } from '@mui/system';
 import { TextField, Button, CircularProgress, Snackbar, Alert, Switch, FormControlLabel, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useJsApiLoader, GoogleMap, Marker, DirectionsRenderer, Autocomplete } from '@react-google-maps/api';
@@ -23,7 +23,6 @@ const theme = createTheme({
 });
 dayjs.locale('fr'); 
 
-
 function DashboardInit(props) {
     const apiUrl = import.meta.env.VITE_API_URL;
     const token = localStorage.getItem('token');
@@ -32,7 +31,6 @@ function DashboardInit(props) {
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
         libraries: ['places']
     });
-    const [value, setValue] = React.useState(dayjs());
     const [formData, setFormData] = useState({
         idFicheUser: '',
         AdresseDepart: '',
@@ -59,7 +57,7 @@ function DashboardInit(props) {
         { name: "Soins de longue durée", duration: "01:00:00" },
         { name: "Traitements ophtalmologiques", duration: "01:00:00" },
         { name: "Psychothérapie", duration: "01:00:00" }
-      ];
+    ];
 
     useEffect(() => {
         if (formData.AdresseDepart && formData.AdresseArrive) {
@@ -70,24 +68,42 @@ function DashboardInit(props) {
 
     useEffect(() => {
         if (isLoaded) {
-            const originAutocomplete = new google.maps.places.Autocomplete(originRef.current);
-            const destinationAutocomplete = new google.maps.places.Autocomplete(destinationRef.current);
+            const originAutocomplete = new window.google.maps.places.Autocomplete(originRef.current);
+            const destinationAutocomplete = new window.google.maps.places.Autocomplete(destinationRef.current);
 
             originAutocomplete.addListener('place_changed', () => {
-                setFormData({ ...formData, AdresseDepart: originAutocomplete.getPlace().formatted_address });
-                calculateRoute();
+                const place = originAutocomplete.getPlace();
+                if (place && place.formatted_address) {
+                    handleSelectOrigin(place);
+                }
             });
 
             destinationAutocomplete.addListener('place_changed', () => {
-                setFormData({ ...formData, AdresseArrive: destinationAutocomplete.getPlace().formatted_address });
-                calculateRoute();
+                const place = destinationAutocomplete.getPlace();
+                if (place && place.formatted_address) {
+                    handleSelectDestination(place);
+                }
             });
         }
     }, [isLoaded]);
 
+    const handleSelectOrigin = (place) => {
+        setFormData(prevState => ({
+            ...prevState,
+            AdresseDepart: place.formatted_address
+        }));
+    };
+
+    const handleSelectDestination = (place) => {
+        setFormData(prevState => ({
+            ...prevState,
+            AdresseArrive: place.formatted_address
+        }));
+    };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target || { name: event.name, value: event };
+        console.log(`Name: ${name}, Value: ${value}`);
     
         setFormData(prevState => ({
             ...prevState,
@@ -98,38 +114,31 @@ function DashboardInit(props) {
     const handleDateChange = (newValue) => {
         setFormData(prevState => ({
             ...prevState,
-            HeureConsult: newValue
+            HeureConsult: newValue.format('YYYY-MM-DDTHH:mm:ss')
         }));
     };
 
     const handleSwitchChange = (event) => {
-        setFormData({ ...formData, AllerRetour: event.target.checked });
-    };
-
-    const handleSelectOrigin = (place) => {
-        setFormData(formData => ({ ...formData, AdresseDepart: place.formatted_address }));
-    };
-    
-    const handleSelectDestination = (place) => {
-        setFormData(formData => ({ ...formData, AdresseArrive: place.formatted_address }));
+        setFormData(prevState => ({
+            ...prevState,
+            AllerRetour: event.target.checked
+        }));
     };
 
     const calculateRoute = async () => {
         if (!formData.AdresseDepart || !formData.AdresseArrive) return;
-        if (formData.AdresseDepart && formData.AdresseArrive) {
-            const directionsService = new google.maps.DirectionsService();
-            const result = await directionsService.route({
-                origin: formData.AdresseDepart,
-                destination: formData.AdresseArrive,
-                travelMode: google.maps.TravelMode.DRIVING
-            });
-    
-            if (result.status === google.maps.DirectionsStatus.OK) {
-                setDirectionsResponse(result);
-            } else {
-                setDirectionsResponse(null);
-                // Vous pouvez également afficher une notification d'erreur ici
-            }
+        const directionsService = new window.google.maps.DirectionsService();
+        const result = await directionsService.route({
+            origin: formData.AdresseDepart,
+            destination: formData.AdresseArrive,
+            travelMode: window.google.maps.TravelMode.DRIVING
+        });
+
+        if (result.status === window.google.maps.DirectionsStatus.OK) {
+            setDirectionsResponse(result);
+        } else {
+            setDirectionsResponse(null);
+            // Vous pouvez également afficher une notification d'erreur ici
         }
     };
 
@@ -143,8 +152,6 @@ function DashboardInit(props) {
     
         return heureDepart;
     };
-
-
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -165,11 +172,17 @@ function DashboardInit(props) {
             setIsLoading(false);
             return;
         }
+
+        // Extract duration from the value
+        const selectedAppointment = formData.DureeConsult.split('-');
+        const dureeConsult = selectedAppointment[1];
+
         const reservationData = {
             ...formData,
             HeureDepart: heureDepart,
             DureeTrajet: DureeTrajet,
             Distance: distanceValue,
+            DureeConsult: dureeConsult,
             AllerRetour: formData.AllerRetour ? 1 : 0
         };
 
@@ -231,14 +244,11 @@ function DashboardInit(props) {
         };
 
         fetchPatients();
-    }, []);
+    }, [apiUrl]);
+    
     if (!isLoaded) {
         return <CircularProgress />;
     }
-        
-    
-    if (!isLoaded) return <Skeleton variant="rectangular" width="100%" height="400px" />;
-
 
     return (
         <div className="DashboardInit">
@@ -256,7 +266,7 @@ function DashboardInit(props) {
                         onChange={handleInputChange}
                     >
                         {patients.map((patient) => (
-                            <MenuItem value={patient.idFiche}>{patient.nom} {patient.prenom}</MenuItem>
+                            <MenuItem key={patient.idFiche} value={patient.idFiche}>{patient.nom} {patient.prenom}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>
@@ -313,8 +323,10 @@ function DashboardInit(props) {
                         label="Type de consultation"
                         onChange={handleInputChange}
                     >
-                        {medicalAppointments.map((appointment) => (
-                            <MenuItem value={appointment.duration}>{appointment.name}</MenuItem>
+                        {medicalAppointments.map((appointment, index) => (
+                            <MenuItem key={index} value={`${appointment.name}-${appointment.duration}`}>
+                                {appointment.name}
+                            </MenuItem>
                         ))}
                     </Select>
                 </FormControl>
@@ -328,7 +340,7 @@ function DashboardInit(props) {
                     label="Prise en charge PMR"
                     onChange={handleInputChange}
                 >
-                    <MenuItem value={0} defaultValue>Non</MenuItem>
+                    <MenuItem value={0}>Non</MenuItem>
                     <MenuItem value={1}>Oui</MenuItem>
                 </Select>
                 </FormControl>

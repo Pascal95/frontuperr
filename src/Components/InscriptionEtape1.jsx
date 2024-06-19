@@ -97,71 +97,62 @@ function InscriptionEtape1(props) {
             borderRadius: '7px',
             marginTop: '40%'
         }}>
-                        <Typography variant="h5" component="h1" gutterBottom>
-                    Inscription
-                </Typography>
-            <Box>
-                <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
-                    <InputLabel htmlFor="input-with-icon-adornment">
-                        Email
-                    </InputLabel>
-                    <Input
-                    id="input-with-icon-adornment"
-                    value={email}
-                    onChange={handleEmailChange}
-                    />
-
-                </FormControl>
-                <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
-                    <InputLabel htmlFor="standard-adornment-password">Mot de passe</InputLabel>
-                    <Input
-                        id="standard-adornment-password"
-                        value={password}
-                        onChange={handlePasswordChange}
-                        type={showPassword ? 'text' : 'password'}
-                        endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                            </IconButton>
-                        </InputAdornment>
-                        }
-                    />
-                </FormControl>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
-                    <InputLabel htmlFor="standard-adornment-password">Confirmez le mot de passe</InputLabel>
-                    <Input
-                        id="standard-adornment-password"
-                        value={confirmPassword}
-                        onChange={handleConfirmPasswordChange}
-                        type={showPassword ? 'text' : 'password'}
-                        endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                            </IconButton>
-                        </InputAdornment>
-                        }
-                    />
-                </FormControl>
-            </Box>
+            <Typography variant="h5" component="h1" gutterBottom>Inscription</Typography>
+            <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
+                <InputLabel htmlFor="input-with-icon-adornment">
+                    Email
+                </InputLabel>
+                <Input
+                id="input-with-icon-adornment"
+                value={email}
+                onChange={handleEmailChange}
+                />
+            </FormControl>
+            <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
+                <InputLabel htmlFor="standard-adornment-password">Mot de passe</InputLabel>
+                <Input
+                    id="standard-adornment-password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    type={showPassword ? 'text' : 'password'}
+                    endAdornment={
+                    <InputAdornment position="end">
+                        <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                    </InputAdornment>
+                    }
+                />
+            </FormControl>
+            <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
+                <InputLabel htmlFor="standard-adornment-password">Confirmez le mot de passe</InputLabel>
+                <Input
+                    id="standard-adornment-password"
+                    value={confirmPassword}
+                    onChange={handleConfirmPasswordChange}
+                    type={showPassword ? 'text' : 'password'}
+                    endAdornment={
+                    <InputAdornment position="end">
+                        <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                    </InputAdornment>
+                    }
+                />
+            </FormControl>
             <Button variant="contained" sx={{ mt: 2 }} onClick={handleInscription}>Inscription</Button>
             {errors.email && <p>{errors.email}</p>}
             {errors.password && <p>{errors.password}</p>}
             {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
             {errors.api && <p>{errors.api}</p>}
-            </Box>
         </Box>
     );
 }

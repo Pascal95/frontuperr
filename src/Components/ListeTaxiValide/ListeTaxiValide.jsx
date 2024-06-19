@@ -1,107 +1,26 @@
 import React , {useState, useEffect} from 'react';
 import './ListeTaxiValide.css';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Collapse, Box, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Button } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Collapse, Box, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Button, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon } from '@mui/icons-material';
 
-function Row({ row }) {
+function Row({ row, handleClickValide, handleClickRefuse, handleDownload }) {
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = localStorage.getItem('token');
   const [open, setOpen] = useState(false);
   const [openRefuseDialog, setOpenRefuseDialog] = useState(false);
   const [refuseMessage, setRefuseMessage] = useState('');
-  const [selectedUserId, setSelectedUserId] = useState(null);
 
-  const handleViewPdf = (fic) => {
-    window.open(`${apiUrl}/files/${fic}`, '_blank');
-  };
-  const handleDownload = async (row) => {
-    try {
-      const response = await fetch(apiUrl+ '/api/users/doc/' + row.USR_KEY, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
 
-      // Crée un objet Blob avec le contenu de la réponse
-      const blob = await response.blob();
-
-      // Crée un lien temporaire pour télécharger le blob
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.setAttribute('download', 'file.zip'); // Nomme le fichier téléchargé
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
-    } catch (error) {
-      console.error('Failed to download file:', error);
-    }
-  };
-  const handleClickValide = async (row) => {
-    try {
-      const response = await fetch(`${apiUrl}/api/users/valideuser`, {
-          method: 'POST',
-          headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              idFiche: row.idFiche,
-          })
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-          throw new Error(data.error || 'Erreur lors de la validation du bon');
-      }
-
-      // Mettre à jour l'état ou la UI pour refléter la validation du bon
-      console.log("Bon validé avec succès", data.message);
-      // Vous pouvez également recharger les bons ici pour mettre à jour les données affichées
-    } catch (error) {
-        console.error('Erreur lors de la validation du bon:', error);
-        // Gérer l'erreur ici (par exemple, afficher un message d'erreur)
-    }
-  }
-
-  const handleClickRefuse = async (row) => {
-    setSelectedUserId(row.idFiche);
+  const handleOpenRefuseDialog = (row) => {
     setOpenRefuseDialog(true);
   }
 
-  const handleRefuse = async (row) => {
-    try {
-      const response = await fetch(`${apiUrl}/api/users/refuseuser`, {
-          method: 'POST',
-          headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              idFiche: row.idFiche,
-              message: refuseMessage
-          })
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-          throw new Error(data.error || "Erreur lors de la validation de l'inscription");
-      }
-
-      // Mettre à jour l'état ou la UI pour refléter la validation du bon
-      console.log("Inscription refusé avec succès", data.message);
-      // Vous pouvez également recharger les bons ici pour mettre à jour les données affichées
-    } catch (error) {
-        console.error("Erreur lors de la validation de l'inscription:", error);
-        // Gérer l'erreur ici (par exemple, afficher un message d'erreur)
-    }
+  const handleConfirmRefuse = () => {
+    handleClickRefuse(row, refuseMessage);
+    setOpenRefuseDialog(false);
   }
-
+  
 
     return (
       <>
@@ -125,7 +44,7 @@ function Row({ row }) {
           </DialogContent>
           <DialogActions>
               <Button onClick={() => setOpenRefuseDialog(false)}>Annuler</Button>
-              <Button onClick={() => handleRefuse(row)}>Confirmer</Button>
+              <Button onClick={handleConfirmRefuse}>Confirmer</Button>
           </DialogActions>
         </Dialog>
         <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -155,7 +74,7 @@ function Row({ row }) {
             <IconButton onClick={() => handleClickValide(row)}>
                 <i className = "ri-check-line" color='green'></i>
             </IconButton>
-            <IconButton onClick={() => handleClickRefuse(row)}>
+            <IconButton onClick={() => handleOpenRefuseDialog(row)}>
                 <i className = "ri-close-line" color='red'></i>
             </IconButton>
           </TableCell>
@@ -222,19 +141,127 @@ function ListeTaxiValide(props) {
     const token = localStorage.getItem('token');
     const [utilisateurs,setutilisateurs] = useState([]);
     const [open, setOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
+    const fetchTaxis = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`${apiUrl}/api/users/taxinonvalide`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        const data = await response.json();
+        setutilisateurs(data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des taxs:', error);
+        setSnackbar({ open: true, message: 'Erreur lors de la récupération des taxs', severity: 'error' });
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
     useEffect(() => {
-        fetch(`${apiUrl}/api/users/taxinonvalide`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => setutilisateurs(data))
-        .catch(error => console.error('Erreur lors de la récupération des taxs:', error));
+      fetchTaxis();
     }, []);
+
+    const handleClickValide = async (row) => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`${apiUrl}/api/users/valideuser`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            idFiche: row.idFiche,
+          })
+        });
+  
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || 'Erreur lors de la validation du bon');
+        }
+  
+        console.log("Bon validé avec succès", data.message);
+        setSnackbar({ open: true, message: 'Bon validé avec succès', severity: 'success' });
+        fetchTaxis(); // Actualiser la liste des taxis
+      } catch (error) {
+        console.error('Erreur lors de la validation du bon:', error);
+        setSnackbar({ open: true, message: error.message, severity: 'error' });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    const handleClickRefuse = async (row) => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`${apiUrl}/api/users/refuseuser`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            idFiche: row.idFiche,
+            message: row.message
+          })
+        });
+  
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Erreur lors de la validation de l'inscription");
+        }
+  
+        console.log("Inscription refusé avec succès", data.message);
+        setSnackbar({ open: true, message: 'Inscription refusée avec succès', severity: 'success' });
+        fetchTaxis(); // Actualiser la liste des taxis
+      } catch (error) {
+        console.error("Erreur lors de la validation de l'inscription:", error);
+        setSnackbar({ open: true, message: error.message, severity: 'error' });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    const handleDownload = async (row) => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(apiUrl+ '/api/users/doc/' + row.USR_KEY, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+  
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+  
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.setAttribute('download', 'file.zip');
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+        setSnackbar({ open: true, message: 'Fichier téléchargé avec succès', severity: 'success' });
+      } catch (error) {
+        console.error('Failed to download file:', error);
+        setSnackbar({ open: true, message: 'Échec du téléchargement du fichier', severity: 'error' });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    const handleCloseSnackbar = () => {
+      setSnackbar({ ...snackbar, open: false });
+    };
 
     return (
         <div className="ListeTaxiValide">
@@ -259,11 +286,23 @@ function ListeTaxiValide(props) {
                 </TableHead>
                 <TableBody>
                     {utilisateurs.map((user, index) => (
-                    <Row key={index} row={user} />
+                                  <Row
+                                  key={index}
+                                  row={user}
+                                  handleClickValide={handleClickValide}
+                                  handleClickRefuse={handleClickRefuse}
+                                  handleDownload={handleDownload}
+                                />
                     ))}
                 </TableBody>
                 </Table>
             </TableContainer>
+            {isLoading && <CircularProgress />}
+            <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+              <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+                {snackbar.message}
+              </Alert>
+            </Snackbar>
         </div>
         
     )

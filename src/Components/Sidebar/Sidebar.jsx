@@ -57,7 +57,7 @@ function Sidebar(props) {
     fetchUserProfile(token);
   }, [token]);
 
-  const filteredNavLinks = formFiche.role === 3 && formFiche.Valide !== true
+  const filteredNavLinks = formFiche.role === 3 && formFiche.Valide !== 3
     ? navLinks.filter(link =>
       link.display === "Mes messages" ||
       link.display === "Inscription à compléter")

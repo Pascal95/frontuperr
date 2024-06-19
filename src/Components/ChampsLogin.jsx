@@ -80,7 +80,8 @@ function ChampsLogin(props) {
                     />
                 </FormControl>
 
-                <Grid item xs={12}>                <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
+                <Grid item xs={12}>                
+                <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
                     <InputLabel htmlFor="standard-adornment-password">Mot de passe</InputLabel>
                     <Input
                         id="standard-adornment-password"

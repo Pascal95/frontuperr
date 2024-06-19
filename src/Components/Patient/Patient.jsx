@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Patient.css';
-import { TextField, Button, FormControlLabel, Checkbox, Table, TableBody, TableCell, TableHead, TableRow, Paper, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TableContainer} from '@mui/material';
+import { TextField, Button, FormControlLabel, Checkbox, Table, TableBody, TableCell, TableHead, TableRow, Paper, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TableContainer, Snackbar, Alert} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 
 
@@ -22,6 +22,8 @@ function Patient(props) {
         numSS: ''
     });
 
+    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
+
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setPatientData({ ...patientData, [name]: value });
@@ -33,6 +35,7 @@ function Patient(props) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setIsLoading(true);
         const dataToSend = {
             ...patientData,
             role: 6, // Patient role
@@ -54,10 +57,15 @@ function Patient(props) {
             if (!response.ok) {
                 throw new Error("Erreur lors de l'ajout du patient");
             }
+            setSnackbar({ open: true, message: 'Patient ajouté avec succès.', severity: 'success' });
+            fetchPatients();
             // Traitement en cas de succès
         } catch (error) {
             console.error(error.message);
+            setSnackbar({ open: true, message: error.message, severity: 'error' });
             // Gérer l'erreur ici
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -77,6 +85,7 @@ function Patient(props) {
             return;
         }
     
+        setIsLoading(true);
         const url = `${apiUrl}/api/users/ficheuser/${editPatientData.idFiche}`;
         const dataToSend = {
             nom: editPatientData.nom,
@@ -112,6 +121,8 @@ function Patient(props) {
         } catch (error) {
             console.error("Erreur lors de la mise à jour :", error);
             setSnackbar({ open: true, message: error.message, severity: 'error' });
+        } finally {
+            setIsLoading(false);
         }
     };
     
@@ -144,6 +155,11 @@ function Patient(props) {
         fetchPatients();
     }, []);
 
+
+    const handleCloseSnackbar = () => {
+        setSnackbar({ ...snackbar, open: false });
+    };
+    
     if (isLoading) {
         return <CircularProgress />;
     }
@@ -161,7 +177,9 @@ function Patient(props) {
                 <TextField label="Email" name="mailcontact" onChange={handleInputChange} fullWidth margin="normal" />
                 <TextField label="Téléphone" name="telephone" onChange={handleInputChange} fullWidth margin="normal" />
                 <TextField label="Numéro de Sécurité Sociale" name="numSS" onChange={handleInputChange} fullWidth margin="normal" />
-                <Button type="submit" variant="contained" color="primary">Ajouter</Button>
+                <Button type="submit" variant="contained" color="primary" disabled={isLoading}>
+                    {isLoading ? <CircularProgress size={24} /> : 'Ajouter'}
+                </Button>
             </form>
             <h2 className="Patient__title">Liste des patients</h2>
             <TableContainer component={Paper}>
@@ -201,97 +219,100 @@ function Patient(props) {
             <Dialog open={openDialog} onClose={handleCloseDialog} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Modifier Patient</DialogTitle>
                 <DialogContent>
-                    <DialogContent>
-        <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Nom"
-            type="text"
-            fullWidth
-            variant="standard"
-            name="nom"
-            value={editPatientData?.nom || ''}
-            onChange={(e) => setEditPatientData({ ...editPatientData, nom: e.target.value })}
-        />
-        <TextField
-            margin="dense"
-            id="prenom"
-            label="Prénom"
-            type="text"
-            fullWidth
-            variant="standard"
-            name="prenom"
-            value={editPatientData?.prenom || ''}
-            onChange={(e) => setEditPatientData({ ...editPatientData, prenom: e.target.value })}
-        />
-        <TextField
-            margin="dense"
-            id="adresse"
-            label="Adresse"
-            type="text"
-            fullWidth
-            variant="standard"
-            name="adresse"
-            value={editPatientData?.adresse || ''}
-            onChange={(e) => setEditPatientData({ ...editPatientData, adresse: e.target.value })}
-        /> 
-                <TextField
-            margin="dense"
-            id="ville"
-            label="Ville"
-            type="text"
-            fullWidth
-            variant="standard"
-            name="ville"
-            value={editPatientData?.ville || ''}
-            onChange={(e) => setEditPatientData({ ...editPatientData, ville: e.target.value })}
-        />
-                <TextField
-            margin="dense"
-            id="codepostal"
-            label="Code postal"
-            type="text"
-            fullWidth
-            variant="standard"
-            name="codepostal"
-            value={editPatientData?.codepostal || ''}
-            onChange={(e) => setEditPatientData({ ...editPatientData, codepostal: e.target.value })}
-        />
-                <TextField
-            margin="dense"
-            id="mailcontact"
-            label="Mail de contact"
-            type="text"
-            fullWidth
-            variant="standard"
-            name="mailcontact"
-            value={editPatientData?.mailcontact || ''}
-            onChange={(e) => setEditPatientData({ ...editPatientData, mailcontact: e.target.value })}
-        />
-                <TextField
-            margin="dense"
-            id="telephone"
-            label="Téléphone"
-            type="text"
-            fullWidth
-            variant="standard"
-            name="telephone"
-            value={editPatientData?.telephone || ''}
-            onChange={(e) => setEditPatientData({ ...editPatientData, telephone: e.target.value })}
-        />
-        {/* Répétez le processus pour les autres champs */}
-    </DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Nom"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        name="nom"
+                        value={editPatientData?.nom || ''}
+                        onChange={(e) => setEditPatientData({ ...editPatientData, nom: e.target.value })}
+                    />
+                    <TextField
+                        margin="dense"
+                        id="prenom"
+                        label="Prénom"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        name="prenom"
+                        value={editPatientData?.prenom || ''}
+                        onChange={(e) => setEditPatientData({ ...editPatientData, prenom: e.target.value })}
+                    />
+                    <TextField
+                        margin="dense"
+                        id="adresse"
+                        label="Adresse"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        name="adresse"
+                        value={editPatientData?.adresse || ''}
+                        onChange={(e) => setEditPatientData({ ...editPatientData, adresse: e.target.value })}
+                    /> 
+                    <TextField
+                        margin="dense"
+                        id="ville"
+                        label="Ville"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        name="ville"
+                        value={editPatientData?.ville || ''}
+                        onChange={(e) => setEditPatientData({ ...editPatientData, ville: e.target.value })}
+                    />
+                    <TextField
+                        margin="dense"
+                        id="codepostal"
+                        label="Code postal"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        name="codepostal"
+                        value={editPatientData?.codepostal || ''}
+                        onChange={(e) => setEditPatientData({ ...editPatientData, codepostal: e.target.value })}
+                    />
+                    <TextField
+                        margin="dense"
+                        id="mailcontact"
+                        label="Mail de contact"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        name="mailcontact"
+                        value={editPatientData?.mailcontact || ''}
+                        onChange={(e) => setEditPatientData({ ...editPatientData, mailcontact: e.target.value })}
+                    />
+                    <TextField
+                        margin="dense"
+                        id="telephone"
+                        label="Téléphone"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        name="telephone"
+                        value={editPatientData?.telephone || ''}
+                        onChange={(e) => setEditPatientData({ ...editPatientData, telephone: e.target.value })}
+                    />
+                    {/* Répétez le processus pour les autres champs */}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseDialog} color="primary">
                         Annuler
                     </Button>
-                    <Button onClick={handleSubmitEdit} color="primary">
-                        Enregistrer
+                    <Button onClick={handleSubmitEdit} color="primary" disabled={isLoading}>
+                        {isLoading ? <CircularProgress size={24} /> : 'Enregistrer'}
                     </Button>
                 </DialogActions>
             </Dialog>
+            <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+                <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
 
         </div>
     );

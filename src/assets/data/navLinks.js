@@ -24,10 +24,16 @@ const navLinks = [
     roles:[1]
   },
   {
+    path: "/Dashboard/AncienneCourse",
+    icon: "ri-shopping-bag-line",
+    display: "Anciennes courses",
+    roles:[1,3,4,5]
+  },
+  {
     path: "/Dashboard/BonSuperviseur",
     icon: "ri-shopping-bag-line",
     display: "Bon de transport a valider",
-    roles:[1]
+    roles:[]
   },
   {
     path: "/Dashboard/CreerUtilisateur",
@@ -39,7 +45,7 @@ const navLinks = [
     path: "/Dashboard/BonTransport",
     icon: "ri-shopping-bag-line",
     display: "Ajouter un bon de transport",
-    roles:[5]
+    roles:[]
   },
   {
     path: "/Dashboard/Disponibilite",
@@ -63,7 +69,7 @@ const navLinks = [
     path: "/Dashboard/InscriptionComplet",
     icon: "ri-alert-line",
     display: "Inscription à compléter",
-    roles: [3] // Assumons que seul le rôle 3 (Taxi) a besoin de compléter l'inscription
+    roles: [] // Assumons que seul le rôle 3 (Taxi) a besoin de compléter l'inscription
   },
   {
     path: "/Dashboard/CourseSup",
@@ -75,7 +81,7 @@ const navLinks = [
     path: "/Dashboard/settings",
     icon: "ri-shopping-bag-line",
     display: "Parametres",
-    roles:[1,2,3,4,5]
+    roles:[]
   },
 ];
 

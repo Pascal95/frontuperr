@@ -72,7 +72,7 @@ function Courses( props ) {
                 <TableHead>
                     <TableRow>
                         <TableCell>ID Reservation</TableCell>
-                        <TableCell>Pour</TableCell>
+                        <TableCell>Taxi</TableCell>
                         <TableCell>Adresse de Départ</TableCell>
                         <TableCell>Adresse d'Arrivée</TableCell>
                         <TableCell>Heure de Départ</TableCell>
@@ -84,7 +84,7 @@ function Courses( props ) {
                     {reservations.map(reservation => (
                         <TableRow key={reservation.idReservation}>
                             <TableCell>{reservation.idReservation}</TableCell>
-                            <TableCell>{reservation.ClientNom} {reservation.ClientPrenom}</TableCell>
+                            <TableCell>{reservation.TaxiNom} {reservation.TaxiPrenom}</TableCell>
                             <TableCell>{reservation.AdresseDepart}</TableCell>
                             <TableCell>{reservation.AdresseArrive}</TableCell>
                             <TableCell>{formatDate(reservation.HeureDepart)}</TableCell>

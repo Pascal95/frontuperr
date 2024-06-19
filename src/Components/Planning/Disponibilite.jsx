@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import './Disponibilite.css';
-import { Button, TextField, MenuItem, Grid, Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@mui/material';
+import { Button, TextField, MenuItem, Grid, Table, TableBody, TableCell, TableHead, TableRow, Paper, Snackbar, Alert, CircularProgress } from '@mui/material';
 
 function Disponibilite(props) {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -24,6 +24,9 @@ function Disponibilite(props) {
     });
 
     const [disponibilites, setDisponibilites] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
+
 
 
     const handleChange = (event) => {
@@ -43,7 +46,8 @@ function Disponibilite(props) {
     
         // Préparation du corps de la requête
         const body = JSON.stringify(disponibilite);
-    
+        setIsLoading(true);
+
         try {
             // Envoi de la requête à l'API
             const response = await fetch(`${apiUrl}/api/taxi/disponibilite`, {
@@ -59,7 +63,8 @@ function Disponibilite(props) {
             // Traitement de la réponse de l'API
             const data = await response.json();
             console.log('Disponibilité ajoutée avec succès:', data);
-    
+            setSnackbar({ open: true, message: 'Disponibilité ajoutée avec succès', severity: 'success' });
+
             // Réinitialisation du formulaire après succès
             setDisponibilite({
                 idJour: '',
@@ -68,37 +73,49 @@ function Disponibilite(props) {
                 HeureDebutApresMidi: '',
                 HeureFinApresMidi: ''
             });
+            fetchDisponibilites();
         } catch (error) {
             console.error('Erreur lors de l\'ajout de la disponibilité:', error);
+            setSnackbar({ open: true, message: 'Erreur lors de l\'ajout de la disponibilité', severity: 'error' });
             // Ici, vous pouvez gérer l'affichage des messages d'erreur à l'utilisateur
+        } finally {
+            setIsLoading(false);
         }
     };
-
-    useEffect(() => {
-        const fetchDisponibilites = async () => {
+    const fetchDisponibilites = async () => {
+        setIsLoading(true);
+        try {
             const response = await fetch(`${apiUrl}/api/disponibilites/taxi`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (response.ok) {
-                const data = await response.json();
-                setDisponibilites(data); // Stockez les disponibilités dans l'état
-            } else {
-                // Gérez l'erreur (par exemple, en affichant un message)
-                console.error('Erreur lors de la récupération des disponibilités');
-            }
-        };
     
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des disponibilités');
+            }
+    
+            const data = await response.json();
+            setDisponibilites(data);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des disponibilités:', error);
+            setSnackbar({ open: true, message: error.message, severity: 'error' });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    useEffect(() => {
         fetchDisponibilites();
     }, []);
     
-
+    const handleCloseSnackbar = () => {
+        setSnackbar({ ...snackbar, open: false });
+    };
     return (
         <div className='Disponibilite'>
             <form onSubmit={handleSubmit}>
-            <h2 className="Disponibilite__title">Ajouter un bon de transport</h2>
+            <h2 className="Disponibilite__title">Ajouter des disponibiltés</h2>
 
             <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -170,7 +187,14 @@ function Disponibilite(props) {
                     />
                 </Grid>
                 <Grid item xs={12}>
-                    <Button type="submit" variant="contained" color="primary">
+                    <Button 
+                        type="submit" 
+                        variant="contained" 
+                        color="primary"
+                        endIcon={isLoading ? <CircularProgress size={24} /> : <SendIcon />}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Ajout en cours...' : "Ajouter Disponibilité"}
                         Ajouter Disponibilité
                     </Button>
                 </Grid>
@@ -200,6 +224,11 @@ function Disponibilite(props) {
                 </TableBody>
             </Table>
         </Paper>
+        <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+                <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 }
