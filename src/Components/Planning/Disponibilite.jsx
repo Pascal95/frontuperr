@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import './Disponibilite.css';
 import { Button, TextField, MenuItem, Grid, Table, TableBody, TableCell, TableHead, TableRow, Paper, Snackbar, Alert, CircularProgress } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
 function Disponibilite(props) {
     const apiUrl = import.meta.env.VITE_API_URL;
     const token = localStorage.getItem('token');
+    const navigate = useNavigate();
     const jours = [
         { id: 1, nom: "Lundi" },
         { id: 2, nom: "Mardi" },
@@ -55,7 +56,12 @@ function Disponibilite(props) {
                 headers: headers,
                 body: body
             });
-    
+            if (response.status === 401 || response.status === 403) {
+                // Token is invalid or expired
+                localStorage.removeItem('token');
+                navigate('/');  // Redirect to login page
+                throw new Error('Token is invalid or expired');
+            }
             if (!response.ok) {
                 throw new Error('Erreur lors de la soumission des disponibilités');
             }
@@ -91,6 +97,13 @@ function Disponibilite(props) {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
+            if (response.status === 401 || response.status === 403) {
+                // Token is invalid or expired
+                localStorage.removeItem('token');
+                navigate('/');  // Redirect to login page
+                throw new Error('Token is invalid or expired');
+            }
     
             if (!response.ok) {
                 throw new Error('Erreur lors de la récupération des disponibilités');

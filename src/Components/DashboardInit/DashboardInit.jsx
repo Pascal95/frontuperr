@@ -9,6 +9,7 @@ import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme({
   components: {
@@ -27,6 +28,7 @@ function DashboardInit(props) {
     const apiUrl = import.meta.env.VITE_API_URL;
     const token = localStorage.getItem('token');
     const [patients, setPatients] = useState([]);
+    const navigate = useNavigate();
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
         libraries: ['places']
@@ -52,7 +54,7 @@ function DashboardInit(props) {
         { name: "Consultation spécialisée", duration: "01:00:00" },
         { name: "Radiologie/Imagerie", duration: "01:00:00" },
         { name: "Thérapie physique", duration: "01:00:00" },
-        { name: "Consultation pré/post-opératoire", duration: "01:00:00" },
+        { name: "Consultation pré/post opératoire", duration: "01:00:00" },
         { name: "Suivi de grossesse", duration: "00:30:00" },
         { name: "Soins de longue durée", duration: "01:00:00" },
         { name: "Traitements ophtalmologiques", duration: "01:00:00" },
@@ -195,7 +197,12 @@ function DashboardInit(props) {
                 },
                 body: JSON.stringify(reservationData)
             });
-
+            if (response.status === 401 || response.status === 403) {
+                // Token is invalid or expired
+                localStorage.removeItem('token');
+                navigate('/');  // Redirect to login page
+                throw new Error('Token is invalid or expired');
+            }
             const data = await response.json();
 
             if (!response.ok) {
@@ -229,7 +236,12 @@ function DashboardInit(props) {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
                 });
-
+                if (response.status === 401 || response.status === 403) {
+                    // Token is invalid or expired
+                    localStorage.removeItem('token');
+                    navigate('/');  // Redirect to login page
+                    throw new Error('Token is invalid or expired');
+                }
                 if (!response.ok) {
                     throw new Error('Erreur lors de la récupération des données');
                 }

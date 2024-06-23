@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import "./CourseSup.css";
+import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
@@ -16,6 +17,7 @@ function CourseSup(props) {
     const [taxis, setTaxis] = useState([]);
     const token = localStorage.getItem('token');
     const apiUrl = import.meta.env.VITE_API_URL;
+    const navigate = useNavigate();
 
     const renderStatusIcon = (etat) => {
         switch (etat) {
@@ -43,6 +45,13 @@ function CourseSup(props) {
                     }
                 });
 
+                if (response.status === 401 || response.status === 403) {
+                    // Token is invalid or expired
+                    localStorage.removeItem('token');
+                    navigate('/');  // Redirect to login page
+                    throw new Error('Token is invalid or expired');
+                }
+
                 if (!response.ok) {
                     throw new Error(`Erreur HTTP: ${response.status}`);
                 }
@@ -66,6 +75,12 @@ function CourseSup(props) {
                         'Authorization': `Bearer ${token}`,
                     },
                 });
+                if (response.status === 401 || response.status === 403) {
+                    // Token is invalid or expired
+                    localStorage.removeItem('token');
+                    navigate('/');  // Redirect to login page
+                    throw new Error('Token is invalid or expired');
+                }
                 if (!response.ok) {
                     throw new Error('Failed to fetch taxis');
                 }
@@ -120,6 +135,12 @@ function CourseSup(props) {
                 }),
             });
     
+            if (response.status === 401 || response.status === 403) {
+                // Token is invalid or expired
+                localStorage.removeItem('token');
+                navigate('/');  // Redirect to login page
+                throw new Error('Token is invalid or expired');
+            }
             if (!response.ok) {
                 throw new Error('Échec de la mise à jour du taxi de la réservation. ' + (await response.json()).error);
             }

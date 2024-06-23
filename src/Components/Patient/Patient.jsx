@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Patient.css';
 import { TextField, Button, FormControlLabel, Checkbox, Table, TableBody, TableCell, TableHead, TableRow, Paper, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TableContainer, Snackbar, Alert} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-
+import { useNavigate } from 'react-router-dom';
 
 function Patient(props) {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -11,6 +11,7 @@ function Patient(props) {
     const [isLoading, setIsLoading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const [editPatientData, setEditPatientData] = useState(null);
+    const navigate = useNavigate();
     const [patientData, setPatientData] = useState({
         nom: '',
         prenom: '',
@@ -54,6 +55,12 @@ function Patient(props) {
                 },
                 body: JSON.stringify(dataToSend)
             });
+            if (response.status === 401 || response.status === 403) {
+                // Token is invalid or expired
+                localStorage.removeItem('token');
+                navigate('/');  // Redirect to login page
+                throw new Error('Token is invalid or expired');
+            }
             if (!response.ok) {
                 throw new Error("Erreur lors de l'ajout du patient");
             }
@@ -108,7 +115,12 @@ function Patient(props) {
                 },
                 body: JSON.stringify(dataToSend)
             });
-    
+            if (response.status === 401 || response.status === 403) {
+                // Token is invalid or expired
+                localStorage.removeItem('token');
+                navigate('/');  // Redirect to login page
+                throw new Error('Token is invalid or expired');
+            }
             if (!response.ok) {
                 throw new Error("Erreur lors de la mise à jour du patient");
             }
@@ -138,6 +150,12 @@ function Patient(props) {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
                 });
+                if (response.status === 401 || response.status === 403) {
+                    // Token is invalid or expired
+                    localStorage.removeItem('token');
+                    navigate('/');  // Redirect to login page
+                    throw new Error('Token is invalid or expired');
+                }
 
                 if (!response.ok) {
                     throw new Error('Erreur lors de la récupération des données');

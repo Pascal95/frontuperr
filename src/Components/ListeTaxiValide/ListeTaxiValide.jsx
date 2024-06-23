@@ -2,6 +2,7 @@ import React , {useState, useEffect} from 'react';
 import './ListeTaxiValide.css';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Collapse, Box, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Button, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 function Row({ row, handleClickValide, handleClickRefuse, handleDownload }) {
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -9,6 +10,7 @@ function Row({ row, handleClickValide, handleClickRefuse, handleDownload }) {
   const [open, setOpen] = useState(false);
   const [openRefuseDialog, setOpenRefuseDialog] = useState(false);
   const [refuseMessage, setRefuseMessage] = useState('');
+  const navigate = useNavigate();
 
 
 
@@ -153,6 +155,12 @@ function ListeTaxiValide(props) {
             'Content-Type': 'application/json'
           }
         });
+        if (response.status === 401 || response.status === 403) {
+          // Token is invalid or expired
+          localStorage.removeItem('token');
+          navigate('/');  // Redirect to login page
+          throw new Error('Token is invalid or expired');
+      }
         const data = await response.json();
         setutilisateurs(data);
       } catch (error) {
@@ -180,7 +188,12 @@ function ListeTaxiValide(props) {
             idFiche: row.idFiche,
           })
         });
-  
+        if (response.status === 401 || response.status === 403) {
+          // Token is invalid or expired
+          localStorage.removeItem('token');
+          navigate('/');  // Redirect to login page
+          throw new Error('Token is invalid or expired');
+      }
         const data = await response.json();
         if (!response.ok) {
           throw new Error(data.error || 'Erreur lors de la validation du bon');
@@ -211,7 +224,12 @@ function ListeTaxiValide(props) {
             message: row.message
           })
         });
-  
+        if (response.status === 401 || response.status === 403) {
+          // Token is invalid or expired
+          localStorage.removeItem('token');
+          navigate('/');  // Redirect to login page
+          throw new Error('Token is invalid or expired');
+      }
         const data = await response.json();
         if (!response.ok) {
           throw new Error(data.error || "Erreur lors de la validation de l'inscription");
@@ -237,6 +255,12 @@ function ListeTaxiValide(props) {
             'Authorization': `Bearer ${token}`
           }
         });
+        if (response.status === 401 || response.status === 403) {
+          // Token is invalid or expired
+          localStorage.removeItem('token');
+          navigate('/');  // Redirect to login page
+          throw new Error('Token is invalid or expired');
+      }
   
         if (!response.ok) {
           throw new Error('Network response was not ok');

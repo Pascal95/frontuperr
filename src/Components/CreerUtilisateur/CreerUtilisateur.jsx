@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './CreerUtilisateur.css';
+import { useNavigate } from 'react-router-dom';
 import { TextField, Button, CircularProgress, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 
@@ -19,6 +20,7 @@ function CreerUtilisateur(props) {
     const [productSelected, setProductSelected] = useState(''); // État pour le produit sélectionné
     const [productInfo, setProductInfo] = useState(null); // Nouvel état pour les informations du produit
     const [priceInfo, setPriceInfo] = useState(null); // Nouvel état pour les informations du prix
+    const navigate = useNavigate();
     
 
     // Validation de l'email
@@ -51,6 +53,13 @@ function CreerUtilisateur(props) {
                     }
                 });
     
+                if (response.status === 401 || response.status === 403) {
+                    // Token is invalid or expired
+                    localStorage.removeItem('token');
+                    navigate('/');  // Redirect to login page
+                    throw new Error('Token is invalid or expired');
+                }
+
                 if (!response.ok) {
                     throw new Error('Erreur lors de la récupération des produits');
                 }
@@ -96,6 +105,13 @@ function CreerUtilisateur(props) {
                 body: JSON.stringify({ email,idFicheSelected, productSelected })
             });
 
+            if (response.status === 401 || response.status === 403) {
+                // Token is invalid or expired
+                localStorage.removeItem('token');
+                navigate('/');  // Redirect to login page
+                throw new Error('Token is invalid or expired');
+            }
+
             if (!response.ok) {
                 throw new Error('Échec de la demande');
             }
@@ -126,6 +142,13 @@ function CreerUtilisateur(props) {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
                 });
+
+                if (response.status === 401 || response.status === 403) {
+                    // Token is invalid or expired
+                    localStorage.removeItem('token');
+                    navigate('/');  // Redirect to login page
+                    throw new Error('Token is invalid or expired');
+                }
 
                 if (!response.ok) {
                     throw new Error('Erreur lors de la récupération des données');

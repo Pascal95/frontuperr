@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Courses.css';
+import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import moment from 'moment';
@@ -9,6 +10,7 @@ function Courses( props ) {
     const [reservations, setReservations] = useState([]);
     const token = localStorage.getItem('token');
     const apiUrl = import.meta.env.VITE_API_URL;
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchReservations = async () => {
@@ -21,7 +23,13 @@ function Courses( props ) {
                         'Content-Type': 'application/json'
                     }
                 });
-
+                if (response.status === 401 || response.status === 403) {
+                    // Token is invalid or expired
+                    localStorage.removeItem('token');
+                    navigate('/');  // Redirect to login page
+                    throw new Error('Token is invalid or expired');
+                }
+                
                 if (!response.ok) {
                     throw new Error(`Erreur HTTP: ${response.status}`);
                 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "./EnvoiMessage.css";
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField, CircularProgress, Snackbar, Alert } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
 
 function EnvoiMessage(props) {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -13,7 +13,7 @@ function EnvoiMessage(props) {
         objet: '',
         contenu: '',
     });
-
+    const navigate = useNavigate();
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
 
     const handleInputChange = (e) => {
@@ -37,7 +37,12 @@ function EnvoiMessage(props) {
                 },
                 body: JSON.stringify(formData)
             });
-
+            if (response.status === 401 || response.status === 403) {
+                // Token is invalid or expired
+                localStorage.removeItem('token');
+                navigate('/');  // Redirect to login page
+                throw new Error('Token is invalid or expired');
+            }
             if (!response.ok) {
                 throw new Error('Erreur lors de l’envoi du message');
             }
@@ -72,7 +77,12 @@ function EnvoiMessage(props) {
                 if (!response.ok) {
                     throw new Error('Erreur lors de la récupération des données');
                 }
-
+                if (response.status === 401 || response.status === 403) {
+                    // Token is invalid or expired
+                    localStorage.removeItem('token');
+                    navigate('/');  // Redirect to login page
+                    throw new Error('Token is invalid or expired');
+                }
                 const data = await response.json();
                 setPatients(data.listeUser);
             } catch (error) {

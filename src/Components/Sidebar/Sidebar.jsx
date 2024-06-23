@@ -3,6 +3,7 @@ import navLinks from "../../assets/data/navLinks";
 import { NavLink } from "react-router-dom";
 import "./sidebar.css";
 import logo from "../../assets/img/LogoHeygoMed.png"
+import { useNavigate } from 'react-router-dom';
 
 function Sidebar(props) {
   const token = localStorage.getItem('token');
@@ -10,6 +11,7 @@ function Sidebar(props) {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
   const [formFiche, setformFiche] = useState({
     nom: '',
     prenom: '',
@@ -37,6 +39,12 @@ function Sidebar(props) {
       }
     })
       .then(response => {
+        if (response.status === 401 || response.status === 403) {
+          // Token is invalid or expired
+          localStorage.removeItem('token');
+          navigate('/');  // Redirect to login page
+          throw new Error('Token is invalid or expired');
+      }
         if (!response.ok) {
           throw new Error(`Erreur HTTP: ${response.status}`);
         }

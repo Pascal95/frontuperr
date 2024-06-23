@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Grid, List, ListItem, ListItemText, Typography, Paper } from '@mui/material';
 import './Message.css';
-
+import { useNavigate } from 'react-router-dom';
 function Message(props) {
     const apiUrl = import.meta.env.VITE_API_URL;
     const token = localStorage.getItem('token');
@@ -9,6 +9,7 @@ function Message(props) {
     const [isLoading, setIsLoading] = useState(false);
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'error' });
     const [selectedMessage, setSelectedMessage] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchMessages = async () => {
@@ -21,6 +22,12 @@ function Message(props) {
                         'Authorization': `Bearer ${token}`
                     }
                 })
+                if (response.status === 401 || response.status === 403) {
+                    // Token is invalid or expired
+                    localStorage.removeItem('token');
+                    navigate('/');  // Redirect to login page
+                    throw new Error('Token is invalid or expired');
+                }
                 if (!response.ok) throw new Error('Erreur lors de la récupération des messages');
                 const data = await response.json();
                 setMessages(data); // Supposons que la réponse est directement le tableau des messages

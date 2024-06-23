@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import 'moment/locale/fr';
 
@@ -16,6 +17,7 @@ function AncienneCourse(props) {
     const [isLoading, setIsLoading] = useState(false);
     const [openUploadDialog, setOpenUploadDialog] = useState(false);
     const [currentIdReservation, setCurrentIdReservation] = useState(null);
+    const navigate = useNavigate();
 
     const renderStatusIcon = (etat) => {
         switch (etat) {
@@ -69,8 +71,16 @@ function AncienneCourse(props) {
                 body: formData
             });
 
+            if (response.status === 401 || response.status === 403) {
+                // Token is invalid or expired
+                localStorage.removeItem('token');
+                navigate('/');  // Redirect to login page
+                throw new Error('Token is invalid or expired');
+            }
+
             if (!response.ok) throw new Error('Network response was not ok.');
 
+            
             // Gérer la réponse ici, par exemple en actualisant la liste des courses
         } catch (error) {
             console.error('Upload error:', error);
@@ -87,6 +97,12 @@ function AncienneCourse(props) {
                         'Authorization': `Bearer ${token}`
                     }
                 });
+                if (response.status === 401 || response.status === 403) {
+                    // Token is invalid or expired
+                    localStorage.removeItem('token');
+                    navigate('/');  // Redirect to login page
+                    throw new Error('Token is invalid or expired');
+                }
                 if (response.ok) {
                     const data = await response.json();
                     setCourses(data.reservations);

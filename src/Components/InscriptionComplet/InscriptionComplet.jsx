@@ -4,13 +4,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-
+import { useNavigate } from 'react-router-dom';
 import './InscriptionComplet.css';
 
 function InscriptionComplet(props) {
     const [selectedSection, setSelectedSection] = useState('identite');
     const [permisFile, setPermisFile] = useState(null);
     const [vehiculeFile, setVehiculeFile] = useState(null);
+    const navigate = useNavigate();
 
     // Exemple de données, à remplacer par vos données dynamiques
     const sections = {

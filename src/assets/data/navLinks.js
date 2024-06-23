@@ -51,7 +51,7 @@ const navLinks = [
     path: "/Dashboard/Disponibilite",
     icon: "ri-shopping-bag-line",
     display: "Mes disponibilités",
-    roles:[1,3]
+    roles:[3]
   },
   {
     path: "/Dashboard/Messages",

@@ -324,7 +324,7 @@ function InscriptionTaxi(props) {
                 setIsLoading(false);
             }
         };
-        if (!hasFicheParam) {
+        if (hasFicheParam==="false") {
             fetchProductInfo();
         }
     }, [location.search, apiUrl, key]);
@@ -812,7 +812,6 @@ function Etape6({ donneesInscription, majDonnees, productInfo, priceInfo }) {
                 "::placeholder": {
                     color: "#aab7c4"
                 },
-                padding: '10px 12px', // Ajoute un padding pour éviter que les éléments soient collés
             },
             invalid: {
                 color: "#fa755a",
