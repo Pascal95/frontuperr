@@ -85,6 +85,36 @@ function Patient(props) {
         setOpenDialog(false);
         setEditPatientData(null); // Réinitialiser les données de l'utilisateur en cours de modification
     };
+
+    const fetchPatients = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch(`${apiUrl}/api/users/mesusers`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            });
+            if (response.status === 401 || response.status === 403) {
+                // Token is invalid or expired
+                localStorage.removeItem('token');
+                navigate('/');  // Redirect to login page
+                throw new Error('Token is invalid or expired');
+            }
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des données');
+            }
+
+            const data = await response.json();
+            setPatients(data.listeUser);
+        } catch (error) {
+            console.error('Erreur:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
     const handleSubmitEdit = async () => {
         // Assurez-vous que toutes les données nécessaires sont présentes
         if (!editPatientData || !editPatientData.idFiche) {
@@ -141,35 +171,6 @@ function Patient(props) {
 
 
     useEffect(() => {
-        const fetchPatients = async () => {
-            setIsLoading(true);
-            try {
-                const response = await fetch(`${apiUrl}/api/users/mesusers`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    }
-                });
-                if (response.status === 401 || response.status === 403) {
-                    // Token is invalid or expired
-                    localStorage.removeItem('token');
-                    navigate('/');  // Redirect to login page
-                    throw new Error('Token is invalid or expired');
-                }
-
-                if (!response.ok) {
-                    throw new Error('Erreur lors de la récupération des données');
-                }
-
-                const data = await response.json();
-                setPatients(data.listeUser);
-            } catch (error) {
-                console.error('Erreur:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         fetchPatients();
     }, []);
 

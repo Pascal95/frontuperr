@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import './Disponibilite.css';
 import { Button, TextField, MenuItem, Grid, Table, TableBody, TableCell, TableHead, TableRow, Paper, Snackbar, Alert, CircularProgress } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
 import { useNavigate } from 'react-router-dom';
 function Disponibilite(props) {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -208,7 +209,6 @@ function Disponibilite(props) {
                         disabled={isLoading}
                     >
                         {isLoading ? 'Ajout en cours...' : "Ajouter Disponibilité"}
-                        Ajouter Disponibilité
                     </Button>
                 </Grid>
             </Grid>

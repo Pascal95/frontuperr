@@ -78,6 +78,12 @@ const navLinks = [
     roles:[1]
   },
   {
+    path: "/Dashboard/ListeUtilisateur",
+    icon: "ri-shopping-bag-line",
+    display: "Liste des utilisateurs",
+    roles:[1]
+  },
+  {
     path: "/Dashboard/settings",
     icon: "ri-shopping-bag-line",
     display: "Parametres",

@@ -48,6 +48,12 @@ function ChampsLogin(props) {
         }
     };
 
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSubmit();
+        }
+    };
+
     return (
         <Box sx={{
             backgroundColor: "#F5F5F5",
@@ -60,7 +66,9 @@ function ChampsLogin(props) {
             padding: '20px',
             borderRadius: '7px',
             marginTop: '40%'
-        }}>
+        }}
+        onKeyDown={handleKeyDown}
+        >
             <Typography variant="h5" component="h1" gutterBottom>
                     Connexion
                 </Typography>

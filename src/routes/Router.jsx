@@ -20,6 +20,7 @@ import InscriptionComplet from "../Components/InscriptionComplet/InscriptionComp
 import InscriptionTaxi from "../Pages/InscriptionTaxi";
 import CreerUtilisateur from "../Components/CreerUtilisateur/CreerUtilisateur";
 import AncienneCourse from "../Components/AncienneCourse/AncienneCourse";
+import ListeUtilisateur from "../Components/ListeUtilisateur/ListeUtilisateur";
 
 
 const Router = () => {
@@ -49,6 +50,7 @@ const Router = () => {
           <Route path="InscriptionComplet" element={<InscriptionComplet />} />
           <Route path="CreerUtilisateur" element={<CreerUtilisateur />} />
           <Route path="AncienneCourse" element={<AncienneCourse />} />
+          <Route path="ListeUtilisateur" element={<ListeUtilisateur />} />
         </Route>
         <Route path="/Inscription" element={<Inscription />} />
         <Route path="/InscriptionEtape/:info" element={<InscriptionEtape/>} />
