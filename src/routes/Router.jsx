@@ -21,6 +21,7 @@ import InscriptionTaxi from "../Pages/InscriptionTaxi";
 import CreerUtilisateur from "../Components/CreerUtilisateur/CreerUtilisateur";
 import AncienneCourse from "../Components/AncienneCourse/AncienneCourse";
 import ListeUtilisateur from "../Components/ListeUtilisateur/ListeUtilisateur";
+import AjoutFichier from "../Components/AjoutFichier/AjoutFichier";
 
 
 const Router = () => {
@@ -51,6 +52,7 @@ const Router = () => {
           <Route path="CreerUtilisateur" element={<CreerUtilisateur />} />
           <Route path="AncienneCourse" element={<AncienneCourse />} />
           <Route path="ListeUtilisateur" element={<ListeUtilisateur />} />
+          <Route path="AjoutFichier" element={<AjoutFichier />} />
         </Route>
         <Route path="/Inscription" element={<Inscription />} />
         <Route path="/InscriptionEtape/:info" element={<InscriptionEtape/>} />

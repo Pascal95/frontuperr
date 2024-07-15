@@ -84,6 +84,12 @@ const navLinks = [
     roles:[1]
   },
   {
+    path: "/Dashboard/AjoutFichier",
+    icon: "ri-shopping-bag-line",
+    display: "Ajouter un fichier",
+    roles:[1]
+  },
+  {
     path: "/Dashboard/settings",
     icon: "ri-shopping-bag-line",
     display: "Parametres",
