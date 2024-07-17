@@ -28,6 +28,11 @@ function Sidebar(props) {
     Valide: 0
   })
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/');
+  };
+
   const fetchUserProfile = (token) => {
     const url = `${apiUrl}/api/users/profile`;
 
@@ -96,7 +101,7 @@ function Sidebar(props) {
         </div>
 
         <div className="sidebar__bottom">
-          <span>
+          <span onClick={handleLogout}>
             <i className="ri-logout-circle-r-line"></i> Se déconnecter
           </span>
         </div>

@@ -657,6 +657,12 @@ function Etape3({ donneesInscription, majDonnees, handleFileChange }) {
                     accept="image/*,.pdf"
                     onChange={handleFileChange} />
                 </Button>
+
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                {donneesInscription.etape3.controletechnique && (
+                    <p>{donneesInscription.etape3.controletechnique.name}</p>
+                )}
             </Box>
         </div>);
 }
@@ -677,6 +683,11 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
                         onChange={handleFileChange} />
                 </Button>
             </Box>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                {donneesInscription.etape4.KBIS && (
+                    <p>{donneesInscription.etape4.KBIS.name}</p>
+                )}
+            </Box>
             <Box sx={{ display: 'flex', alignItems: 'flex-end', marginTop: '16px' }}>
                 <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
                     Attestation d'assurance
@@ -687,6 +698,11 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
                     accept="image/*,.pdf"
                     onChange={handleFileChange} />
                 </Button>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                {donneesInscription.etape4.attestassurance && (
+                    <p>{donneesInscription.etape4.attestassurance.name}</p>
+                )}
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'flex-end', marginTop: '16px' }}>
                 <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
@@ -699,6 +715,11 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
                     onChange={handleFileChange} />
                 </Button>
             </Box>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                {donneesInscription.etape4.autostationnement && (
+                    <p>{donneesInscription.etape4.autostationnement.name}</p>
+                )}
+            </Box>
             <Box sx={{ display: 'flex', alignItems: 'flex-end', marginTop: '16px' }}>
                 <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
                 Attestation de stage continue
@@ -709,6 +730,11 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
                     accept="image/*,.pdf"
                     onChange={handleFileChange} />
                 </Button>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                {donneesInscription.etape4.atteststagecontinue && (
+                    <p>{donneesInscription.etape4.atteststagecontinue.name}</p>
+                )}
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'flex-end', marginTop: '16px' }}>
                 <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
@@ -721,6 +747,11 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
                     onChange={handleFileChange} />
                 </Button>
             </Box>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                {donneesInscription.etape4.attestmedicale && (
+                    <p>{donneesInscription.etape4.attestmedicale.name}</p>
+                )}
+            </Box>
             <Box sx={{ display: 'flex', alignItems: 'flex-end', marginTop: '16px' }}>
                 <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
                 Carte professionnelle
@@ -732,6 +763,11 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
                     onChange={handleFileChange} />
                 </Button>
             </Box>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                {donneesInscription.etape4.cartepro && (
+                    <p>{donneesInscription.etape4.cartepro.name}</p>
+                )}
+            </Box>
             <Box sx={{ display: 'flex', alignItems: 'flex-end', marginTop: '16px' }}>
                 <Button variant="contained" component="label" startIcon={<CloudUploadIcon />}>
                 Permis de conduire
@@ -742,6 +778,11 @@ function Etape4({ donneesInscription, majDonnees, handleFileChange }) {
                     accept="image/*,.pdf"
                     onChange={handleFileChange} />
                 </Button>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                {donneesInscription.etape4.permis && (
+                    <p>{donneesInscription.etape4.permis.name}</p>
+                )}
             </Box>
         </div>
         );

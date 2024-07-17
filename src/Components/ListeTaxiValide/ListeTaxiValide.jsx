@@ -196,14 +196,14 @@ function ListeTaxiValide(props) {
       }
         const data = await response.json();
         if (!response.ok) {
-          throw new Error(data.error || 'Erreur lors de la validation du bon');
+          throw new Error(data.error || "Erreur lors de la validation de l'utilisateur");
         }
   
-        console.log("Bon validé avec succès", data.message);
-        setSnackbar({ open: true, message: 'Bon validé avec succès', severity: 'success' });
+        console.log("Utilisateur validé avec succès", data.message);
+        setSnackbar({ open: true, message: 'Utilisateur validé avec succès', severity: 'success' });
         fetchTaxis(); // Actualiser la liste des taxis
       } catch (error) {
-        console.error('Erreur lors de la validation du bon:', error);
+        console.error('Erreur lors de la validation du utilisateur:', error);
         setSnackbar({ open: true, message: error.message, severity: 'error' });
       } finally {
         setIsLoading(false);
