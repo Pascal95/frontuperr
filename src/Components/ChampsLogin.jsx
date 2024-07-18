@@ -35,7 +35,7 @@ function ChampsLogin(props) {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.erreur || 'Une erreur est survenue lors de la connexion');
+                throw new Error(data.message || 'Une erreur est survenue lors de la connexion');
             }
             localStorage.setItem('token', data.token);
             navigate('/Dashboard');

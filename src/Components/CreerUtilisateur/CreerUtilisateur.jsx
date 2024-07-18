@@ -113,7 +113,8 @@ function CreerUtilisateur(props) {
             }
 
             if (!response.ok) {
-                throw new Error('Échec de la demande');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Échec de la demande');
             }
 
             const data = await response.json();
@@ -124,7 +125,8 @@ function CreerUtilisateur(props) {
             // Traitez la réponse ici
         } catch (error) {
             console.error('Erreur lors de l\'envoi de l\'email:', error);
-            setSnackbarMessage('Erreur lors de la création de l\'utilisateur');
+            const errorMessage = error.message || "Une erreur est survenue lors de l'envoi de l'email";
+            setSnackbarMessage(errorMessage);
             setSnackbarSeverity('error');
             setSnackbarOpen(true);
         } finally {

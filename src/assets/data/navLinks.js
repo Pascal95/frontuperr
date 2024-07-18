@@ -9,7 +9,7 @@ const navLinks = [
     path: "/Dashboard/courses",
     icon: "ri-user-2-line",
     display: "Mes courses",
-    roles:[1,3,4,5]
+    roles:[3,4,5]
   },
   {
     path: "/Dashboard/patient",

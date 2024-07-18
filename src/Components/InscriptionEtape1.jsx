@@ -9,6 +9,10 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Input from '@mui/material/Input';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { useNavigate } from 'react-router-dom';
 
 function InscriptionEtape1(props) {
     const [email, setEmail] = useState('');
@@ -16,7 +20,11 @@ function InscriptionEtape1(props) {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
     const apiUrl = import.meta.env.VITE_API_URL;
+    const navigate = useNavigate();
 
 
     const handleEmailChange = (event) => setEmail(event.target.value);
@@ -55,7 +63,7 @@ function InscriptionEtape1(props) {
 
         setErrors(validationErrors);
         if (Object.keys(validationErrors).length === 0) {
-            
+            setIsLoading(true);
             try {
                 console.log(apiUrl)
                 const response = await fetch(`${apiUrl}/api/users/register`, {
@@ -69,20 +77,27 @@ function InscriptionEtape1(props) {
                 const data = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(data.erreur || "Une erreur est survenue lors de l'inscription");
+                    throw new Error(data.error || "Une erreur est survenue lors de l'inscription");
                 }
 
                 // Gérer le succès de l'inscription ici
                 console.log("Inscription réussie", data);
                 // Redirection ou mise à jour de l'état de l'application
-
+                setIsLoading(false);
+                navigate('/');
             } catch (err) {
-                // Gérer les erreurs de l'API ici
-                setErrors({ api: err.message });
+                console.log(err)
+                const errorMessage = err.message || "Une erreur est survenue lors de l'inscription";
+                setErrors({ api: errorMessage });
+                setAlertMessage(errorMessage);
+                setAlertOpen(true);
+                setIsLoading(false);
             }
         }
     };
-
+    const handleAlertClose = () => {
+        setAlertOpen(false);
+    };
 
     return (
         <Box sx={{
@@ -148,11 +163,18 @@ function InscriptionEtape1(props) {
                     }
                 />
             </FormControl>
-            <Button variant="contained" sx={{ mt: 2 }} onClick={handleInscription}>Inscription</Button>
+            <Button variant="contained" sx={{ mt: 2 }} onClick={handleInscription} disabled={isLoading}>
+                {isLoading ? <CircularProgress size={24} /> : 'Inscription'}
+            </Button>
             {errors.email && <p>{errors.email}</p>}
             {errors.password && <p>{errors.password}</p>}
             {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
             {errors.api && <p>{errors.api}</p>}
+            <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleAlertClose}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{ width: '100%' }}>
+                    {alertMessage}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }

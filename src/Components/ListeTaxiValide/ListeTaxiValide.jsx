@@ -29,21 +29,21 @@ function Row({ row, handleClickValide, handleClickRefuse, handleDownload }) {
         <Dialog open={openRefuseDialog} onClose={() => setOpenRefuseDialog(false)}>
           <DialogTitle>Refuser l'inscription</DialogTitle>
           <DialogContent>
-              <DialogContentText>
-                  Veuillez fournir une raison pour le refus de l'inscription.
-              </DialogContentText>
-              <TextField
-                  autoFocus
-                  margin="dense"
-                  id="refuseMessage"
-                  label="Message de Refus"
-                  type="text"
-                  fullWidth
-                  variant="standard"
-                  value={refuseMessage}
-                  onChange={(e) => setRefuseMessage(e.target.value)}
-              />
-          </DialogContent>
+            <DialogContentText>
+              Veuillez fournir une raison pour le refus de l'inscription.
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="refuseMessage"
+              label="Message de Refus"
+              type="text"
+              fullWidth
+              variant="standard"
+              value={refuseMessage}
+              onChange={(e) => setRefuseMessage(e.target.value)} // Update refuseMessage state
+            />
+        </DialogContent>
           <DialogActions>
               <Button onClick={() => setOpenRefuseDialog(false)}>Annuler</Button>
               <Button onClick={handleConfirmRefuse}>Confirmer</Button>
@@ -145,6 +145,7 @@ function ListeTaxiValide(props) {
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
+    console.log(props.refuseMessage)
     const fetchTaxis = async () => {
       setIsLoading(true);
       try {
@@ -210,7 +211,7 @@ function ListeTaxiValide(props) {
       }
     };
   
-    const handleClickRefuse = async (row) => {
+    const handleClickRefuse = async (row, refuseMessage) => {
       setIsLoading(true);
       try {
         const response = await fetch(`${apiUrl}/api/users/refuseuser`, {
@@ -221,21 +222,20 @@ function ListeTaxiValide(props) {
           },
           body: JSON.stringify({
             idFiche: row.idFiche,
-            message: row.message
+            message: refuseMessage // Pass refuseMessage in the request body
           })
         });
         if (response.status === 401 || response.status === 403) {
-          // Token is invalid or expired
           localStorage.removeItem('token');
           navigate('/');  // Redirect to login page
           throw new Error('Token is invalid or expired');
-      }
+        }
         const data = await response.json();
         if (!response.ok) {
           throw new Error(data.error || "Erreur lors de la validation de l'inscription");
         }
-  
-        console.log("Inscription refusé avec succès", data.message);
+    
+        console.log("Inscription refusée avec succès", data.message);
         setSnackbar({ open: true, message: 'Inscription refusée avec succès', severity: 'success' });
         fetchTaxis(); // Actualiser la liste des taxis
       } catch (error) {
