@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { Grid, InputLabel, MenuItem, FormControl, Select, TextField, Typography, Button } from '@mui/material';
 import { Box } from '@mui/system';
 import SendIcon from '@mui/icons-material/Send';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import 'dayjs/locale/fr';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
@@ -94,6 +99,20 @@ function InscriptionEtape2(props) {
                             onChange={props.onInputChange}
                             value={props.data.codepostal}  
                         />
+                    </FormControl>
+                    <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
+                            <DatePicker
+                                label="Date de naissance"
+                                value={props.data.datenaissance ? dayjs(props.data.datenaissance) : null}
+                                onChange={(newValue) => {
+                                    props.onInputChange({ target: { name: 'datenaissance', value: newValue } });
+                                }}
+                                renderInput={(params) => <TextField {...params} />}
+                                views={['day','month','year']}
+                                inputFormat="DD/MM/YYYY" 
+                            />
+                        </LocalizationProvider>
                     </FormControl>
                     <FormControl variant="standard" sx={{ m: 1, width: '25ch' }}>
                         <TextField 

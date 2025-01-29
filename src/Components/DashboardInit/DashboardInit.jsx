@@ -31,7 +31,9 @@ function DashboardInit(props) {
     const navigate = useNavigate();
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-        libraries: ['places']
+        libraries: ['places'],
+        language: 'fr',
+        region: 'FR'
     });
     const [formData, setFormData] = useState({
         idFicheUser: '',
@@ -70,8 +72,13 @@ function DashboardInit(props) {
 
     useEffect(() => {
         if (isLoaded) {
-            const originAutocomplete = new window.google.maps.places.Autocomplete(originRef.current);
-            const destinationAutocomplete = new window.google.maps.places.Autocomplete(destinationRef.current);
+            const options = {
+                componentRestrictions: { country: 'fr' },
+                fields: ['formatted_address', 'geometry', 'name']
+            };
+
+            const originAutocomplete = new window.google.maps.places.Autocomplete(originRef.current, options);
+            const destinationAutocomplete = new window.google.maps.places.Autocomplete(destinationRef.current, options);
 
             originAutocomplete.addListener('place_changed', () => {
                 const place = originAutocomplete.getPlace();
