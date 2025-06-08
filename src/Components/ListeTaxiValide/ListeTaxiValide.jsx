@@ -99,8 +99,8 @@ function Row({ row, handleClickValide, handleClickRefuse, handleDownload }) {
                   <TableBody>
                       <TableRow key={row.id}>
                         <TableCell>{row.numPermis}</TableCell>
-                        <TableCell>{row.dateDel}</TableCell>
-                        <TableCell>{row.dateExpi}</TableCell>
+                        <TableCell>{new Date(row.dateDel).toLocaleDateString('fr-FR')}</TableCell>
+                        <TableCell>{new Date(row.dateExpi).toLocaleDateString('fr-FR')}</TableCell>
 
                       </TableRow>
                   </TableBody>
@@ -165,7 +165,7 @@ function ListeTaxiValide(props) {
         const data = await response.json();
         setutilisateurs(data);
       } catch (error) {
-        console.error('Erreur lors de la récupération des taxs:', error);
+        console.error('Erreur lors de la récupération des taxis:', error);
         setSnackbar({ open: true, message: 'Erreur lors de la récupération des taxs', severity: 'error' });
       } finally {
         setIsLoading(false);

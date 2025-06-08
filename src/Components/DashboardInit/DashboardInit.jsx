@@ -177,7 +177,7 @@ function DashboardInit(props) {
         const distanceValue = distanceMatch ? parseFloat(distanceMatch[0]) : 0;
 
         if (distanceValue < 15){
-            setSnackbar({ open: true, message: "La distance est inférieure à 15 km", severity: 'error' });
+            setSnackbar({ open: true, message: "Malheuresement nos services ne peuvent pas prendre en compte votre réservation", severity: 'error' });
             setIsLoading(false);
             return;
         }

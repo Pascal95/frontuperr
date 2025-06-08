@@ -1,4 +1,4 @@
-import React ,{useState} from 'react';
+import React ,{useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import InscriptionEtape2 from '../Components/InscriptionEtape2';
 import InscriptPaiement from '../Components/InscriptPaiement';
@@ -40,11 +40,29 @@ function InscriptionEtape(props) {
         IdStripe:''
     })
 
+    useEffect(() => {
+        const verifierSiDejaInscrit = async () => {
+            try {
+                const response = await fetch(`${apiUrl}/api/users/ficheuser/${idUSR}`);
+                const data = await response.json();
+    
+                if (response.ok && data && data.formulaireComplet) {
+                    navigate('/'); // Redirige vers la page de connexion si fiche déjà remplie
+                }
+            } catch (err) {
+                console.error("Erreur lors de la vérification de la fiche utilisateur", err);
+            }
+        };
+    
+        verifierSiDejaInscrit();
+    }, []);
     const allerAEtapeSuivante = async () => {
         console.log("etape", etape)
         try {
             if (etape === 2) {
                 await soumettreFormFiche();
+                navigate("/");
+                return;
             }
             // Passer à l'étape suivante si tout va bien
             setEtape(etape + 1); // Utilisez etape + 1 au lieu de etape++
@@ -138,26 +156,6 @@ function InscriptionEtape(props) {
                     </Grid>
                 </Box>
             );
-        case 3:
-            return (
-                <Box sx={{ flexGrow: 1 }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
-                            
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                                <Box
-                                    sx={{
-                                        backgroundImage: `url(${VoitureMickael})`,
-                                        backgroundSize: 'cover',
-                                        backgroundPosition: 'center',
-                                        height: '100vh', // ajustez selon vos besoins
-                                    }}
-                                />
-                        </Grid>
-                    </Grid>
-                </Box>
-                );
         default:
             return (
                 <Box sx={{ flexGrow: 1 }}>

@@ -42,6 +42,7 @@ function InscriptionTaxi(props) {
             prenom: '',
             adresse: '',
             codepostal: '',
+            datenaissance: '',
             ville: '',
             telephone: '',
         }, 
@@ -236,12 +237,14 @@ function InscriptionTaxi(props) {
         formData.append('etape2[prenom]', donneesInscription.etape2.prenom);
         formData.append('etape2[adresse]', donneesInscription.etape2.adresse);
         formData.append('etape2[codepostal]', donneesInscription.etape2.codepostal);
+        formData.append('etape2[datenaissance]', donneesInscription.etape2.datenaissance);
         formData.append('etape2[ville]', donneesInscription.etape2.ville);
         formData.append('etape2[telephone]', donneesInscription.etape2.telephone);
         
         // Ajout des champs de l'étape 3 (y compris le fichier si présent)
         formData.append('etape3[marquevehicule]', donneesInscription.etape3.marquevehicule);
         formData.append('etape3[modele]', donneesInscription.etape3.modele);
+        formData.append('etape3[plaque]', donneesInscription.etape3.plaque);
         formData.append('etape3[annee]', donneesInscription.etape3.annee);
         formData.append('etape3[couleurvehicule]', donneesInscription.etape3.couleurvehicule);
         formData.append('etape3[pecPMR]', donneesInscription.etape3.pecPMR);
@@ -508,6 +511,22 @@ function Etape2({ donneesInscription, majDonnees }) {
                         name="prenom"
                         value={donneesInscription.etape2.prenom}
                         onChange={majDonnees}
+                    />
+                </FormControl>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
+                    <TextField
+                        id="standard"
+                        label="Date de naissance"
+                        name="datenaissance"
+                        type="date"
+                        value={donneesInscription.etape2.datenaissance}
+                        onChange={majDonnees}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        variant="standard"
                     />
                 </FormControl>
             </Box>
@@ -806,37 +825,37 @@ function Etape5 ({ donneesInscription, majDonnees }) {
             
         
             <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-    <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
-        <TextField
-            id="date-delivrance"
-            label="Date de délivrance"
-            type="date"
-            name='dateDel'
-            value={donneesInscription.etape5.dateDel}
-            onChange={majDonnees}
-            InputLabelProps={{
-                shrink: true,
-            }}
-            variant="standard"
-        />
-    </FormControl>
-</Box>
-<Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-    <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
-        <TextField
-            id="date-expiration"
-            label="Date d'expiration"
-            type="date"
-            name='dateExpi'
-            value={donneesInscription.etape5.dateExpi}
-            onChange={majDonnees}
-            InputLabelProps={{
-                shrink: true,
-            }}
-            variant="standard"
-        />
-    </FormControl>
-</Box>
+                <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
+                    <TextField
+                        id="date-delivrance"
+                        label="Date de délivrance"
+                        type="date"
+                        name='dateDel'
+                        value={donneesInscription.etape5.dateDel}
+                        onChange={majDonnees}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        variant="standard"
+                    />
+                </FormControl>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
+                    <TextField
+                        id="date-expiration"
+                        label="Date d'expiration"
+                        type="date"
+                        name='dateExpi'
+                        value={donneesInscription.etape5.dateExpi}
+                        onChange={majDonnees}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        variant="standard"
+                    />
+                </FormControl>
+            </Box>
         </div>
     );
 }

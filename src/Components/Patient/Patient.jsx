@@ -18,6 +18,7 @@ function Patient(props) {
         adresse: '',
         ville: '',
         codepostal: '',
+        datenaissance:'',
         mailcontact: '',
         telephone: '',
         numSS: ''
@@ -40,7 +41,7 @@ function Patient(props) {
         const dataToSend = {
             ...patientData,
             role: 6, // Patient role
-            idCNX: 0, // Pas d'ID de connexion
+            idCNX: null, // Pas d'ID de connexion
             TransportDispo: 0, // Transport disponible initialisé à 0
             valide: true,
             signature: '',
@@ -190,6 +191,17 @@ function Patient(props) {
                 {/* Les champs du formulaire */}
                 <TextField label="Nom" name="nom" onChange={handleInputChange} fullWidth margin="normal" />
                 <TextField label="Prénom" name="prenom" onChange={handleInputChange} fullWidth margin="normal" />
+                <TextField
+                    label="Date de Naissance"
+                    name="datenaissance"
+                    type="date"
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                />
                 <TextField label="Adresse" name="adresse" onChange={handleInputChange} fullWidth margin="normal" />
                 <TextField label="Ville" name="ville" onChange={handleInputChange} fullWidth margin="normal" />
                 <TextField label="Code Postal" name="codepostal" onChange={handleInputChange} fullWidth margin="normal" />
@@ -207,6 +219,7 @@ function Patient(props) {
                         <TableRow>
                             <TableCell>Nom</TableCell>
                             <TableCell>Prénom</TableCell>
+                            <TableCell>Date de naissance</TableCell>
                             <TableCell>Adresse</TableCell>
                             <TableCell>Ville</TableCell>
                             <TableCell>Code Postal</TableCell>
@@ -220,6 +233,7 @@ function Patient(props) {
                             <TableRow key={patient.idFiche}>
                                 <TableCell>{patient.nom}</TableCell>
                                 <TableCell>{patient.prenom}</TableCell>
+                                <TableCell>{new Date(patient.datenaissance).toLocaleDateString('fr-FR')}</TableCell>
                                 <TableCell>{patient.adresse}</TableCell>
                                 <TableCell>{patient.ville}</TableCell>
                                 <TableCell>{patient.codepostal}</TableCell>

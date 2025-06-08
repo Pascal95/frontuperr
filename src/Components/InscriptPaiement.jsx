@@ -80,7 +80,7 @@ function InscriptPaiement(props) {
             setIsLoading(false);
         } else {
             props.data.IdStripe = paymentIntent.id;
-            //props.allerAEtapeSuivante();
+            props.allerAEtapeSuivante();
             console.log(props.data);
         }
     };

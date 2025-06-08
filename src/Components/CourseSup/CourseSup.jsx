@@ -7,7 +7,6 @@ import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import moment from 'moment';
-import 'moment/locale/fr';
 
 
 function CourseSup(props) {
@@ -97,7 +96,7 @@ function CourseSup(props) {
     }, [openDialog]);
     
     const formatDate = (dateString) => {
-        return moment(dateString).locale('fr').format('DD/MM/YYYY HH:mm');
+        return moment.utc(dateString).format('DD/MM/YYYY HH:mm')
     };
 
     const handleEditClick = (reservation) => {
